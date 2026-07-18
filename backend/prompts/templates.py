@@ -342,9 +342,21 @@ RESUME_REWRITE_PROMPT = """You are an expert resume writer at CareerGPS AI speci
 Rewrite the resume content to be ATS-optimized and impactful. Return ONLY valid JSON:
 
 {{
-  "rewritten_summary": "<professional summary>",
+  "contact": {{
+    "name": "<full name from resume or Candidate>",
+    "email": "<email if present else empty>",
+    "phone": "<phone if present else empty>",
+    "location": "<city/country if present else empty>",
+    "linkedin": "<url or handle if present else empty>",
+    "github": "<url or handle if present else empty>",
+    "portfolio": "<url if present else empty>"
+  }},
+  "rewritten_summary": "<professional summary tailored to target role>",
   "rewritten_experience": [
-    {{"title": "<title>", "company": "<company>", "bullets": ["<bullet with metrics>"]}}
+    {{"title": "<title>", "company": "<company>", "dates": "<dates>", "bullets": ["<bullet with metrics>"]}}
+  ],
+  "education": [
+    {{"degree": "<degree>", "school": "<school>", "year": "<year>", "details": "<gpa/honors if any>"}}
   ],
   "rewritten_projects": [
     {{"name": "<name>", "bullets": ["<bullet>"], "tech_stack": ["<tech>"]}}
@@ -354,12 +366,65 @@ Rewrite the resume content to be ATS-optimized and impactful. Return ONLY valid 
     "tools": ["<tool>"],
     "soft": ["<skill>"]
   }},
+  "certifications": ["<cert if any>"],
   "ats_keywords_added": ["<keyword>"],
   "changes_made": ["<change>"],
-  "full_rewritten_text": "<complete rewritten resume text>"
+  "full_rewritten_text": "<complete rewritten resume as plain text>"
 }}
 
 Original Resume:
 {resume_text}
 Target Role: {target_role}
+"""
+
+RESUME_BUILD_PROMPT = """You are an expert resume writer at CareerGPS AI.
+
+Build a complete, ATS-optimized resume for a student / young professional from the inputs below.
+Invent realistic but honest framing — do NOT invent fake companies the user did not mention.
+If experience is thin, emphasize projects, coursework, and transferable skills.
+Return ONLY valid JSON:
+
+{{
+  "contact": {{
+    "name": "{full_name}",
+    "email": "{email}",
+    "phone": "{phone}",
+    "location": "{location}",
+    "linkedin": "{linkedin}",
+    "github": "{github}",
+    "portfolio": "{portfolio}"
+  }},
+  "rewritten_summary": "<compelling 3-4 sentence summary for {target_role}>",
+  "rewritten_experience": [
+    {{"title": "<title>", "company": "<org>", "dates": "<dates>", "bullets": ["<impact bullet>"]}}
+  ],
+  "education": [
+    {{"degree": "<degree>", "school": "<school>", "year": "<year>", "details": "<details>"}}
+  ],
+  "rewritten_projects": [
+    {{"name": "<name>", "bullets": ["<bullet>"], "tech_stack": ["<tech>"]}}
+  ],
+  "skills_section": {{
+    "technical": ["<skill>"],
+    "tools": ["<tool>"],
+    "soft": ["<skill>"]
+  }},
+  "certifications": ["<cert>"],
+  "full_rewritten_text": "<complete resume as plain text>",
+  "tips": ["<tip for the student>"]
+}}
+
+Target Role: {target_role}
+Full Name: {full_name}
+Email: {email}
+Phone: {phone}
+Location: {location}
+LinkedIn: {linkedin}
+GitHub: {github}
+Portfolio: {portfolio}
+Education: {education}
+Experience / Internships: {experience}
+Projects: {projects}
+Skills: {skills}
+Extra Notes: {notes}
 """

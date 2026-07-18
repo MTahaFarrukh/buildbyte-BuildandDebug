@@ -34,9 +34,54 @@ export const resumeApi = {
   },
   analyze: (data: { resume_text?: string; resume_id?: string; target_role?: string }) =>
     api.post('/resume/analyze', data),
-  rewrite: (data: { resume_text: string; target_role: string }) =>
-    api.post('/resume/rewrite', data),
+  rewrite: (data: {
+    resume_text: string
+    target_role: string
+    full_name?: string
+    generate_pdf?: boolean
+  }) => api.post('/resume/rewrite', data),
+  build: (data: {
+    full_name: string
+    email?: string
+    phone?: string
+    location?: string
+    linkedin?: string
+    github?: string
+    portfolio?: string
+    target_role: string
+    education?: string
+    experience?: string
+    projects?: string
+    skills?: string
+    notes?: string
+    generate_pdf?: boolean
+  }) => api.post('/resume/build', data),
+  pdf: (data: {
+    structured?: Record<string, unknown>
+    plain_text?: string
+    full_name?: string
+    target_role?: string
+    filename?: string
+  }) =>
+    api.post('/resume/pdf', data, {
+      responseType: 'blob',
+    }),
   list: (userId: string) => api.get(`/resume/list/${userId}`),
+}
+
+export function downloadBase64Pdf(base64: string, filename: string) {
+  const binary = atob(base64)
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
+  const blob = new Blob([bytes], { type: 'application/pdf' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename || 'CareerGPS_Resume.pdf'
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
 }
 
 export const jobApi = {

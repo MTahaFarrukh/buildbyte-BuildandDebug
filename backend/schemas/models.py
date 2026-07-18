@@ -75,6 +75,35 @@ class ResumeAnalysisResult(BaseModel):
 class ResumeRewriteRequest(BaseModel):
     resume_text: str
     target_role: str = "Software Engineer"
+    full_name: Optional[str] = None
+    generate_pdf: bool = True
+
+
+class ResumeBuildRequest(BaseModel):
+    full_name: str
+    email: str = ""
+    phone: str = ""
+    location: str = ""
+    linkedin: str = ""
+    github: str = ""
+    portfolio: str = ""
+    target_role: str = "Software Engineer"
+    education: str = ""
+    experience: str = ""
+    projects: str = ""
+    skills: str = ""
+    notes: str = ""
+    generate_pdf: bool = True
+
+
+class ResumePdfRequest(BaseModel):
+    """Generate a PDF from structured rewrite/build JSON or plain text."""
+
+    structured: Optional[dict[str, Any]] = None
+    plain_text: Optional[str] = None
+    full_name: str = "Resume"
+    target_role: str = "Software Engineer"
+    filename: str = "CareerGPS_Resume.pdf"
 
 
 # ─── Job Analysis ─────────────────────────────────────────────────────────────
