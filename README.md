@@ -5,15 +5,15 @@
 > Built for **BuildByte** — IEEE NED Student Branch Hackathon
 
 ### Project
-[![BuildByte](https://img.shields.io/badge/Hackathon-BuildByte-4F46E5?style=for-the-badge&logo=ieee&logoColor=white)](https://github.com/MTahaFarrukh/buildbyte-Amigos)
+[![BuildByte](https://img.shields.io/badge/Hackathon-BuildByte-4F46E5?style=for-the-badge&logo=ieee&logoColor=white)](https://github.com/MTahaFarrukh/buildbyte-BuildandDebug)
 [![Team](https://img.shields.io/badge/Team-BuildandDebug-7C3AED?style=for-the-badge)](#team)
 [![Product](https://img.shields.io/badge/Product-CareerGPS%20AI-06B6D4?style=for-the-badge)](#solution-overview-in-our-own-words)
 [![Status](https://img.shields.io/badge/Status-MVP%20Ready-10B981?style=for-the-badge)](#submission-checklist-buildbyte)
 
 ### Repository
-[![GitHub](https://img.shields.io/badge/GitHub-buildbyte--Amigos-181717?style=flat-square&logo=github)](https://github.com/MTahaFarrukh/buildbyte-Amigos)
+[![GitHub](https://img.shields.io/badge/GitHub-buildbyte--BuildandDebug-181717?style=flat-square&logo=github)](https://github.com/MTahaFarrukh/buildbyte-BuildandDebug)
 [![License](https://img.shields.io/badge/License-Hackathon%20Use-blue?style=flat-square)](#license)
-[![PRs](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square)](https://github.com/MTahaFarrukh/buildbyte-Amigos)
+[![PRs](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square)](https://github.com/MTahaFarrukh/buildbyte-BuildandDebug)
 
 ### Frontend
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
@@ -44,7 +44,7 @@
 |-------|---------|
 | **Team name** | **BuildandDebug** |
 | **Members** | Muhammad Taha Farrukh · Muhammad Bilal Rasheed |
-| **Repository** | https://github.com/MTahaFarrukh/buildbyte-Amigos |
+| **Repository** | https://github.com/MTahaFarrukh/buildbyte-BuildandDebug |
 | **Product** | CareerGPS AI |
 
 ---
