@@ -763,6 +763,22 @@ export const useWorkspace = create<WorkspaceState>()(
     },
     {
       name: 'careergps_workspace_v1',
+      merge: (persisted, current) => {
+        const p = (persisted || {}) as Partial<typeof initial>
+        return {
+          ...current,
+          ...p,
+          roadmapTasks: p.roadmapTasks ?? current.roadmapTasks ?? [],
+          trackedProjects: p.trackedProjects ?? current.trackedProjects ?? [],
+          documents: p.documents ?? current.documents ?? [],
+          mentorChat: p.mentorChat ?? current.mentorChat ?? [],
+          jobPrepChat: p.jobPrepChat ?? current.jobPrepChat ?? [],
+          timeline: p.timeline ?? current.timeline ?? [],
+          achievements: p.achievements ?? current.achievements ?? [],
+          scoreHistory: p.scoreHistory ?? current.scoreHistory ?? [],
+          mockInterviews: p.mockInterviews ?? current.mockInterviews ?? [],
+        }
+      },
       partialize: (s) => ({
         resumeId: s.resumeId,
         resumeFilename: s.resumeFilename,

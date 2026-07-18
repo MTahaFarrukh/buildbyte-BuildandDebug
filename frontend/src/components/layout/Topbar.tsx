@@ -9,6 +9,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
   const { theme, toggleTheme } = useTheme()
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  // Select primitives only — avoid returning new objects from selectors (infinite re-render).
   const careerScore = useWorkspace((s) => s.getCareerScore())
 
   return (

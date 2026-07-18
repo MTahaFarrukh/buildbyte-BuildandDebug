@@ -40,29 +40,50 @@ import { scoreColor, cn } from '@/lib/utils'
 
 export default function DashboardPage() {
   const { user } = useAuth()
-  const ws = useWorkspace()
-  const snap = ws.getScoreSnapshot()
-  const progress = ws.getRoadmapProgress()
-  const next = ws.getNextTask()
-  const analytics = ws.getAnalytics()
-  const completed = ws.getCompletedTaskCount()
-  const pending = ws.roadmapTasks.filter((t) => t.status !== 'completed' && t.status !== 'skipped')
+  const resumeScore = useWorkspace((s) => s.resumeScore)
+  const atsScore = useWorkspace((s) => s.atsScore)
+  const interviewReadiness = useWorkspace((s) => s.interviewReadiness)
+  const learningHours = useWorkspace((s) => s.learningHours)
+  const projectsBuilt = useWorkspace((s) => s.projectsBuilt)
+  const careerPath = useWorkspace((s) => s.careerPath)
+  const targetRole = useWorkspace((s) => s.targetRole)
+  const weeklyGoal = useWorkspace((s) => s.weeklyGoal)
+  const roadmap = useWorkspace((s) => s.roadmap)
+  const roadmapTasks = useWorkspace((s) => s.roadmapTasks) ?? []
+  const trackedProjects = useWorkspace((s) => s.trackedProjects) ?? []
+  const mentorChat = useWorkspace((s) => s.mentorChat) ?? []
+  const achievements = useWorkspace((s) => s.achievements) ?? []
+  const resetWorkspace = useWorkspace((s) => s.resetWorkspace)
+  const getScoreSnapshot = useWorkspace((s) => s.getScoreSnapshot)
+  const getRoadmapProgress = useWorkspace((s) => s.getRoadmapProgress)
+  const getNextTask = useWorkspace((s) => s.getNextTask)
+  const getAnalytics = useWorkspace((s) => s.getAnalytics)
+  const getCompletedTaskCount = useWorkspace((s) => s.getCompletedTaskCount)
+  const getRecommendations = useWorkspace((s) => s.getRecommendations)
+  const getWeeklyReportData = useWorkspace((s) => s.getWeeklyReportData)
+
+  const snap = getScoreSnapshot()
+  const progress = getRoadmapProgress()
+  const next = getNextTask()
+  const analytics = getAnalytics()
+  const completed = getCompletedTaskCount()
+  const pending = roadmapTasks.filter((t) => t.status !== 'completed' && t.status !== 'skipped')
   const activeProject =
-    ws.trackedProjects.find((p) => p.status === 'in_progress' || p.status === 'started') ||
-    ws.trackedProjects[0]
-  const recentChat = [...ws.mentorChat].slice(-4).reverse()
-  const recs = ws.getRecommendations()
+    trackedProjects.find((p) => p.status === 'in_progress' || p.status === 'started') ||
+    trackedProjects[0]
+  const recentChat = [...mentorChat].slice(-4).reverse()
+  const recs = getRecommendations()
 
   const reset = () => {
     if (!confirm('Reset workspace? This clears resume analysis, roadmaps, chats, and progress.'))
       return
-    ws.resetWorkspace()
+    resetWorkspace()
     toast.success('Workspace reset')
   }
 
   const exportWeekly = async () => {
     try {
-      const payload = ws.getWeeklyReportData()
+      const payload = getWeeklyReportData()
       const { data } = await bonusApi.weeklyReport(payload)
       if (data.pdf_base64) {
         downloadBase64Pdf(data.pdf_base64, data.filename || 'CareerGPS_Weekly_Report.pdf')
@@ -86,7 +107,7 @@ export default function DashboardPage() {
           </h1>
           <p className="mt-1 text-muted-foreground">
             Your career command center · Goal:{' '}
-            <span className="font-medium text-foreground">{ws.targetRole}</span>
+            <span className="font-medium text-foreground">{targetRole}</span>
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -157,11 +178,11 @@ export default function DashboardPage() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:col-span-2">
           {[
-            { label: 'Resume Score', value: ws.resumeScore ?? 0, icon: Award, href: '/app/resume' },
-            { label: 'ATS Score', value: ws.atsScore ?? 0, icon: TrendingUp, href: '/app/resume' },
+            { label: 'Resume Score', value: resumeScore ?? 0, icon: Award, href: '/app/resume' },
+            { label: 'ATS Score', value: atsScore ?? 0, icon: TrendingUp, href: '/app/resume' },
             {
               label: 'Interview Ready',
-              value: ws.interviewReadiness ?? 0,
+              value: interviewReadiness ?? 0,
               icon: Target,
               href: '/app/job-prep',
             },
@@ -184,15 +205,14 @@ export default function DashboardPage() {
               <div>
                 <p className="text-xs text-muted-foreground">Hours studied</p>
                 <p className="mt-2 flex items-center gap-2 text-2xl font-bold">
-                  <Clock className="h-5 w-5 text-accent" /> {ws.learningHours}
+                  <Clock className="h-5 w-5 text-accent" /> {learningHours}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Projects</p>
                 <p className="mt-2 flex items-center gap-2 text-2xl font-bold">
                   <Rocket className="h-5 w-5 text-secondary" />{' '}
-                  {ws.trackedProjects.filter((p) => p.status === 'completed').length ||
-                    ws.projectsBuilt}
+                  {trackedProjects.filter((p) => p.status === 'completed').length || projectsBuilt}
                 </p>
               </div>
               <div>
@@ -206,12 +226,12 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {ws.achievements.length > 0 && (
+      {achievements.length > 0 && (
         <Card className="glass">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Achievements</CardTitle>
             <CardDescription>
-              {ws.achievements.length} / {ACHIEVEMENT_DEFS.length} unlocked
+              {achievements.length} / {ACHIEVEMENT_DEFS.length} unlocked
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -227,7 +247,7 @@ export default function DashboardPage() {
               <Map className="h-5 w-5 text-primary" /> Today&apos;s focus
             </CardTitle>
             <CardDescription>
-              {ws.careerPath} · Weekly goal: {ws.weeklyGoal}
+              {careerPath} · Weekly goal: {weeklyGoal}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -238,7 +258,7 @@ export default function DashboardPage() {
                 {next?.title || 'Generate a roadmap to unlock daily tasks'}
               </p>
               <Button asChild size="sm" className="mt-3" variant="secondary">
-                <Link to={next ? '/app/roadmap' : '/app/roadmap'}>
+                <Link to="/app/roadmap">
                   {next ? 'Continue' : 'Create Roadmap'} <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -255,7 +275,7 @@ export default function DashboardPage() {
                   </Badge>
                 </div>
               ))}
-              {!pending.length && !ws.roadmap && (
+              {!pending.length && !roadmap && (
                 <p className="text-sm text-muted-foreground">
                   No roadmap yet — create one to populate today&apos;s tasks.
                 </p>

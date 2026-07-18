@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Compass } from 'lucide-react'
 import { motion } from 'framer-motion'
@@ -6,8 +7,31 @@ import { ACHIEVEMENT_DEFS } from '@/lib/careerEngine'
 import { useWorkspace } from '@/store/workspace'
 import { cn } from '@/lib/utils'
 
+/** Stable fingerprint so we only recompute recommendations when inputs change. */
+function useRecommendationDeps() {
+  return useWorkspace(
+    (s) =>
+      [
+        s.resumeId ?? '',
+        s.resumeText ? '1' : '0',
+        s.resumeAnalysis ? '1' : '0',
+        String(s.resumeScore ?? ''),
+        s.roadmap ? '1' : '0',
+        String(s.getRoadmapProgress()),
+        s.getNextTask()?.id ?? '',
+        s.jobMatch ? '1' : '0',
+        String(s.interviewReadiness ?? ''),
+        String(s.projectsBuilt),
+        String(s.trackedProjects?.length ?? 0),
+        ((s.skillGap?.missing_skills as unknown[]) || []).length,
+        String(s.getCareerScore()),
+      ].join('|'),
+  )
+}
+
 export function RecommendationBanner({ className }: { className?: string }) {
-  const recs = useWorkspace((s) => s.getRecommendations())
+  const deps = useRecommendationDeps()
+  const recs = useMemo(() => useWorkspace.getState().getRecommendations(), [deps])
   const top = recs[0]
   if (!top) return null
 
@@ -42,7 +66,7 @@ export function RecommendationBanner({ className }: { className?: string }) {
 }
 
 export function AchievementsRow({ limit = 8 }: { limit?: number }) {
-  const unlocked = useWorkspace((s) => s.achievements)
+  const unlocked = useWorkspace((s) => s.achievements) ?? []
   if (!unlocked.length) return null
 
   return (
