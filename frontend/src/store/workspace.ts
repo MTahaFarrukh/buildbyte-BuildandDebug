@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import {
   ACHIEVEMENT_DEFS,
   computeCareerScore,
@@ -209,6 +209,68 @@ const initial = {
   mockInterviews: [] as MockInterviewRecord[],
   weeklyGoalTargetHours: 10,
   weeklyHoursLogged: 0,
+}
+
+const LEGACY_WORKSPACE_KEY = 'careergps_workspace_v1'
+const ACTIVE_USER_KEY = 'careergps_workspace_active_user'
+
+function workspaceStorageKey(userId: string) {
+  return `careergps_workspace_user_${userId}`
+}
+
+/** Persist each account's career OS separately (browser localStorage). */
+const perUserStorage = createJSONStorage(() => ({
+  getItem: (_name: string) => {
+    if (typeof localStorage === 'undefined') return null
+    const uid = localStorage.getItem(ACTIVE_USER_KEY)
+    if (!uid) return null
+    return localStorage.getItem(workspaceStorageKey(uid))
+  },
+  setItem: (_name: string, value: string) => {
+    if (typeof localStorage === 'undefined') return
+    const uid = localStorage.getItem(ACTIVE_USER_KEY)
+    if (!uid) return
+    localStorage.setItem(workspaceStorageKey(uid), value)
+  },
+  removeItem: (_name: string) => {
+    if (typeof localStorage === 'undefined') return
+    const uid = localStorage.getItem(ACTIVE_USER_KEY)
+    if (!uid) return
+    localStorage.removeItem(workspaceStorageKey(uid))
+  },
+}))
+
+/**
+ * Bind the Career Workspace to the signed-in user.
+ * Different accounts no longer share resume / roadmap / scores.
+ */
+export async function bindWorkspaceToUser(userId: string | null) {
+  if (typeof localStorage === 'undefined') return
+
+  const prev = localStorage.getItem(ACTIVE_USER_KEY)
+
+  if (!userId) {
+    localStorage.removeItem(ACTIVE_USER_KEY)
+    useWorkspace.getState().resetWorkspace()
+    return
+  }
+
+  // One-time: move old shared workspace into this user's bucket
+  const legacy = localStorage.getItem(LEGACY_WORKSPACE_KEY)
+  if (legacy && !localStorage.getItem(workspaceStorageKey(userId))) {
+    localStorage.setItem(workspaceStorageKey(userId), legacy)
+    localStorage.removeItem(LEGACY_WORKSPACE_KEY)
+  }
+
+  if (prev === userId) {
+    // Same account (e.g. page refresh) — reload their saved workspace
+    await useWorkspace.persist.rehydrate()
+    return
+  }
+
+  localStorage.setItem(ACTIVE_USER_KEY, userId)
+  useWorkspace.getState().resetWorkspace()
+  await useWorkspace.persist.rehydrate()
 }
 
 function uid(prefix: string) {
@@ -762,7 +824,9 @@ export const useWorkspace = create<WorkspaceState>()(
       }
     },
     {
-      name: 'careergps_workspace_v1',
+      name: 'careergps_workspace',
+      storage: perUserStorage,
+      skipHydration: true,
       merge: (persisted, current) => {
         const p = (persisted || {}) as Partial<typeof initial>
         return {

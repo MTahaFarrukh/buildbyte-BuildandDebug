@@ -27,6 +27,8 @@ export default function AuthCallbackPage() {
       }
       localStorage.setItem('careergps_token', data.session.access_token)
       localStorage.setItem('careergps_user', JSON.stringify(profile))
+      const { bindWorkspaceToUser } = await import('@/store/workspace')
+      await bindWorkspaceToUser(profile.id)
       toast.success('Signed in with Google')
       navigate('/app')
       window.location.reload()

@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 import { authApi, dashboardApi } from '@/lib/api'
+import { bindWorkspaceToUser } from '@/store/workspace'
 import { toast } from 'sonner'
 
 export interface UserProfile {
@@ -77,10 +78,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const u = localStorage.getItem(STORAGE_USER)
     if (t && u) {
       setToken(t)
-      setUser(JSON.parse(u))
-      refreshProfile().finally(() => setLoading(false))
+      const parsed = JSON.parse(u) as UserProfile
+      setUser(parsed)
+      bindWorkspaceToUser(parsed.id)
+        .then(() => refreshProfile())
+        .finally(() => setLoading(false))
     } else {
-      setLoading(false)
+      void bindWorkspaceToUser(null).finally(() => setLoading(false))
     }
   }, [refreshProfile])
 
@@ -95,6 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_USER, JSON.stringify(profile))
     setToken(data.access_token)
     setUser(profile)
+    await bindWorkspaceToUser(profile.id)
     await refreshProfile()
     toast.success('Welcome back!')
   }
@@ -123,11 +128,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     localStorage.setItem(STORAGE_USER, JSON.stringify(profile))
     setUser(profile)
+    await bindWorkspaceToUser(profile.id)
     await refreshProfile()
     toast.success('Account created!')
   }
 
   const logout = () => {
+    void bindWorkspaceToUser(null)
     localStorage.removeItem(STORAGE_TOKEN)
     localStorage.removeItem(STORAGE_USER)
     setToken(null)
