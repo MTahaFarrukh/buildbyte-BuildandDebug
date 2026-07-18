@@ -2,9 +2,45 @@
 
 **Your AI Career Mentor for Students & Young Professionals.**
 
-CareerGPS AI is a premium SaaS-style web application that helps students and early-career professionals become job-ready with personalized AI guidance — resume analysis, job matching, roadmaps, interview prep, skill gaps, learning plans, and a career mentor chat.
+> Built for **BuildByte** — IEEE NED Student Branch Hackathon
 
-![CareerGPS AI](./docs/screenshots/hero-placeholder.png)
+[![GitHub](https://img.shields.io/badge/GitHub-buildbyte--Amigos-4F46E5)](https://github.com/MTahaFarrukh/buildbyte-Amigos)
+[![Stack](https://img.shields.io/badge/Stack-React%20%2B%20FastAPI%20%2B%20Groq-7C3AED)](#tech-stack)
+[![AI](https://img.shields.io/badge/AI-Llama%203.3%2070B-06B6D4)](#architecture)
+
+---
+
+## Team
+
+| Field | Details |
+|-------|---------|
+| **Team name** | **BuildandDebug** |
+| **Members** | Muhammad Taha Farrukh · Muhammad Bilal Rasheed |
+| **Repository** | https://github.com/MTahaFarrukh/buildbyte-Amigos |
+| **Product** | CareerGPS AI |
+
+---
+
+## Solution Overview (in our own words)
+
+Students graduate every year with degrees but without a clear hiring path. They don’t know which skills companies actually want, whether their resume will pass ATS filters, what projects to build, or how to prepare for interviews. Generic chatbots give advice that disappears the moment the tab closes — no roadmap, no scores, no downloadable resume, no progress.
+
+**CareerGPS AI** is our answer: a single career operating system for students and young professionals. Upload a resume (or build one from scratch), get scored against ATS standards, download a rewritten PDF, paste a job description to see your match gap, generate a week-by-week roadmap, practice interviews, and talk to a mentor that stays on-topic as a coach — not as a random chatbot.
+
+We designed it like a real startup product (Linear / Vercel energy): dark/light theme, glass UI, animated transitions, and a modular FastAPI backend with structured JSON prompts so every AI feature returns usable data, not walls of text.
+
+---
+
+## Why this is innovative
+
+Most “career AI” demos stop at one chat box. CareerGPS combines **diagnosis → plan → practice → package** in one loop:
+
+1. **Diagnose** — resume scores, skill gaps, JD match %
+2. **Plan** — personalized roadmaps + daily/weekly learning planner
+3. **Practice** — interview suites + mentor chat with memory
+4. **Package** — ATS rewrite **and AI-built resumes exported as real PDFs**
+
+The differentiator is not “we called an LLM.” It is **structured career workflows** (prompts → JSON → UI → PDF/deliverable) that a student can actually use to apply for jobs this week.
 
 ---
 
@@ -12,45 +48,56 @@ CareerGPS AI is a premium SaaS-style web application that helps students and ear
 
 | Feature | Description |
 |---------|-------------|
-| **Landing** | Linear/Vercel-inspired marketing page with hero, features, testimonials, pricing, FAQ |
-| **Auth** | Signup, login, forgot password, Google OAuth (via Supabase) |
+| **Landing** | Premium marketing page — hero, features, testimonials, free pricing, FAQ |
+| **Auth** | Signup, login, forgot password, Google OAuth (Supabase) |
 | **Dashboard** | Career score, tasks, recommended skills, weekly goal, roadmap progress, badges |
-| **Resume AI** | PDF upload, text extraction, multi-score analysis, ATS rewrite |
-| **Job Match** | Resume vs JD comparison with match %, missing skills & keywords |
-| **Roadmap** | Personalized weekly/monthly timelines, courses, books, certs, projects |
+| **Resume AI** | PDF upload, multi-score analysis, ATS rewrite, **downloadable PDF** |
+| **Build Resume** | No resume? AI builds one from your details → **PDF export** |
+| **Job Match** | Resume vs job description: match %, missing skills & keywords |
+| **Roadmap** | Weekly/monthly timelines, courses, books, certs, projects |
 | **Projects** | Beginner → Advanced portfolio project generator |
 | **Interview Prep** | Technical, behavioral, HR, coding, system design + mock interview |
-| **Skill Gap** | Current vs missing skills with priority, difficulty, time estimates |
+| **Skill Gap** | Priority-ordered missing skills with time estimates |
 | **Learning Planner** | Daily / weekly / monthly adaptive plans |
-| **AI Mentor Chat** | Context-aware career coach (not generic ChatGPT) |
-| **Analytics** | Charts for progress, hours, projects, resume scores + weekly insights |
-| **Pro Tools** | LinkedIn review, portfolio review, GitHub analysis |
-| **Settings** | Theme, notifications, profile, delete account |
-| **Bonus** | Career confidence score, gamification badges, ATS one-click rewrite |
+| **AI Mentor Chat** | Context-aware career coach with conversation memory |
+| **Analytics** | Progress charts + weekly AI insights |
+| **Pro Tools** | LinkedIn, portfolio, and GitHub profile reviews |
+| **Settings** | Theme, notifications, profile, account controls |
 
 ---
 
 ## Tech Stack
 
 ### Frontend
-- React + Vite + TypeScript
-- Tailwind CSS v4
-- Framer Motion
-- React Router
-- React Hook Form
-- Lucide Icons
-- Axios
-- Recharts
-- Sonner
-- Supabase JS (Auth)
+React · Vite · TypeScript · Tailwind CSS v4 · Framer Motion · React Router · React Hook Form · Lucide · Axios · Recharts · Sonner · Supabase JS
 
 ### Backend
-- FastAPI + Uvicorn
-- LangChain + Groq (Llama 3.3 70B)
-- Pydantic
-- python-dotenv
-- pypdf
-- Supabase (Auth, DB, Storage)
+FastAPI · Uvicorn · LangChain · Groq (Llama 3.3 70B) · Pydantic · python-dotenv · pypdf · ReportLab (PDF) · Supabase (Auth, DB, Storage)
+
+---
+
+## Architecture
+
+```
+┌─────────────┐     REST/JSON      ┌──────────────┐
+│  React App  │ ◄────────────────► │   FastAPI    │
+│  (Vercel)   │                    │   (Render)   │
+└──────┬──────┘                    └──────┬───────┘
+       │                                  │
+       │ Supabase Auth                    │ LangChain + structured prompts
+       ▼                                  ▼
+┌─────────────┐                    ┌──────────────┐
+│  Supabase   │                    │  Groq API    │
+│ Auth/DB/S3  │                    │ Llama 3.3 70B│
+└─────────────┘                    └──────────────┘
+                                  │
+                                  ▼
+                           ReportLab PDF engine
+```
+
+- Modular backend: `routers` → `services` → `prompts` / `database`
+- Every major AI feature returns **validated JSON** for reliable UI rendering
+- Graceful demo fallbacks if keys are missing (judges can still click through)
 
 ---
 
@@ -58,41 +105,41 @@ CareerGPS AI is a premium SaaS-style web application that helps students and ear
 
 ```
 buildbyte-hackathon/
-├── frontend/                 # React Vite app
+├── frontend/                 # React + Vite app
 │   ├── src/
 │   │   ├── components/       # UI + layout
 │   │   ├── context/          # Auth + Theme
 │   │   ├── lib/              # API, Supabase, utils
-│   │   ├── pages/            # All screens
+│   │   ├── pages/            # All product screens
 │   │   ├── App.tsx
 │   │   └── main.tsx
 │   ├── public/
 │   ├── .env.example
 │   └── package.json
 ├── backend/                  # FastAPI API
-│   ├── routers/              # API endpoints
-│   ├── services/             # AI + demo fallbacks
-│   ├── schemas/              # Pydantic models
-│   ├── prompts/              # Prompt templates
-│   ├── database/             # Supabase client + SQL schema
+│   ├── routers/
+│   ├── services/             # AI + PDF + demo fallbacks
+│   ├── schemas/
+│   ├── prompts/
+│   ├── database/             # Supabase client + schema.sql
 │   ├── utils/
 │   ├── main.py
 │   ├── config.py
 │   ├── requirements.txt
 │   └── .env.example
-├── docs/screenshots/         # Screenshot placeholders
+├── docs/screenshots/
 └── README.md
 ```
 
 ---
 
-## Quick Start
+## Quick Start (Installation)
 
 ### Prerequisites
 - Node.js 20+
 - Python 3.11+
-- (Optional) Groq API key
-- (Optional) Supabase project
+- Groq API key (for live AI)
+- Supabase project (for real auth/storage; demo auth works without it)
 
 ### 1. Backend
 
@@ -107,32 +154,32 @@ python -m venv venv
 source venv/bin/activate
 
 pip install -r requirements.txt
-copy .env.example .env   # or: cp .env.example .env
-# Edit .env and add GROQ_API_KEY (optional — demo mode works without it)
+cp .env.example .env   # Windows: copy .env.example .env
+# Add GROQ_API_KEY and Supabase keys to .env
 
 uvicorn main:app --reload --port 8000
 ```
 
-API docs: http://localhost:8000/docs  
-Health: http://localhost:8000/health
+- API docs: http://localhost:8000/docs  
+- Health: http://localhost:8000/health  
 
 ### 2. Frontend
 
 ```bash
 cd frontend
 npm install
-copy .env.example .env   # or: cp .env.example .env
+cp .env.example .env   # Windows: copy .env.example .env
+# Set VITE_API_URL=http://localhost:8000
 npm run dev
 ```
 
 App: http://localhost:5173
 
-### Demo login
-Without Supabase, **any email/password** works in demo mode. Full AI responses require a Groq API key.
-
 ---
 
 ## Environment Variables
+
+> Never commit real secrets. Use `.env.example` as the template.
 
 ### Backend (`backend/.env`)
 
@@ -140,26 +187,39 @@ Without Supabase, **any email/password** works in demo mode. Full AI responses r
 |----------|-------------|
 | `GROQ_API_KEY` | Groq API key for Llama 3.3 70B |
 | `GROQ_MODEL` | Default: `llama-3.3-70b-versatile` |
-| `SUPABASE_URL` | Supabase project URL |
-| `SUPABASE_KEY` | Supabase anon key |
+| `SUPABASE_URL` | Project URL (`https://xxxx.supabase.co`) — **no** `/rest/v1/` |
+| `SUPABASE_KEY` | Anon / public key |
 | `SUPABASE_SERVICE_KEY` | Service role key (storage/admin) |
-| `FRONTEND_URL` | CORS origin (default `http://localhost:5173`) |
-| `PORT` | API port (default `8000`) |
+| `FRONTEND_URL` | CORS origin (`http://localhost:5173`) |
+| `PORT` | API port (`8000`) |
 
 ### Frontend (`frontend/.env`)
 
 | Variable | Description |
 |----------|-------------|
 | `VITE_API_URL` | Backend URL (`http://localhost:8000`) |
-| `VITE_SUPABASE_URL` | Supabase URL (optional) |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anon key (optional) |
+| `VITE_SUPABASE_URL` | Same Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon key |
 
-### API Keys
-1. **Groq** — https://console.groq.com → create API key  
-2. **Supabase** — https://supabase.com → create project → Settings → API  
-3. Run `backend/database/schema.sql` in the Supabase SQL editor  
-4. Create a Storage bucket named `resumes`  
-5. Enable Google provider under Authentication → Providers  
+### Setup tips
+1. Groq key → https://console.groq.com  
+2. Supabase → create project → Settings → API  
+3. Run `backend/database/schema.sql` in SQL Editor  
+4. Storage bucket: `resumes`  
+5. Auth → Email → disable **Confirm email** for local demo  
+6. Optional: enable Google provider  
+
+---
+
+## Judge Demo Script (5 minutes)
+
+1. Open landing page → show product story  
+2. Sign up / log in  
+3. **Resume AI** → Analyze existing resume **or** **Build with AI** → **Download PDF**  
+4. **Job Match** → paste a JD → show match % + missing skills  
+5. **Roadmap** → generate path for target role  
+6. **AI Mentor** → ask a career question (show coaching tone)  
+7. **Analytics / Dashboard** → career score + progress  
 
 ---
 
@@ -172,7 +232,9 @@ Without Supabase, **any email/password** works in demo mode. Full AI responses r
 | POST | `/api/auth/forgot-password` | Password reset |
 | POST | `/api/resume/upload` | Upload PDF |
 | POST | `/api/resume/analyze` | AI resume analysis |
-| POST | `/api/resume/rewrite` | ATS rewrite |
+| POST | `/api/resume/rewrite` | ATS rewrite + PDF (`pdf_base64`) |
+| POST | `/api/resume/build` | Build resume from profile + PDF |
+| POST | `/api/resume/pdf` | Generate PDF from structured/plain text |
 | POST | `/api/job/analyze` | Resume vs JD |
 | POST | `/api/roadmap/generate` | Career roadmap |
 | POST | `/api/project/generate` | Project ideas |
@@ -188,54 +250,48 @@ Without Supabase, **any email/password** works in demo mode. Full AI responses r
 
 ---
 
-## Architecture
-
-```
-┌─────────────┐     REST/JSON      ┌──────────────┐
-│  React App  │ ◄────────────────► │   FastAPI    │
-│  (Vercel)   │                    │   (Render)   │
-└──────┬──────┘                    └──────┬───────┘
-       │                                  │
-       │ Supabase Auth                    │ LangChain
-       ▼                                  ▼
-┌─────────────┐                    ┌──────────────┐
-│  Supabase   │                    │  Groq API    │
-│ Auth/DB/S3  │                    │ Llama 3.3 70B│
-└─────────────┘                    └──────────────┘
-```
-
-- Modular backend: `routers` → `services` → `prompts` / `database`
-- Structured JSON prompts for every AI feature
-- Demo fallbacks when `GROQ_API_KEY` is missing (hackathon-ready)
-
----
-
 ## Deployment
 
 ### Frontend → Vercel
-1. Import the `frontend` folder as a Vercel project  
-2. Set env: `VITE_API_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`  
-3. Build command: `npm run build`  
-4. Output: `dist`
+1. Import `frontend`  
+2. Env: `VITE_API_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`  
+3. Build: `npm run build` · Output: `dist`
 
 ### Backend → Render
-1. New Web Service from `backend`  
+1. Web service from `backend`  
 2. Build: `pip install -r requirements.txt`  
 3. Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`  
-4. Set env vars from `.env.example`  
-5. Update `FRONTEND_URL` and frontend `VITE_API_URL` to production URLs  
+4. Set production env vars; update `FRONTEND_URL` / `VITE_API_URL`
+
+---
+
+## Submission Checklist (BuildByte)
+
+- [x] Complete source code on GitHub  
+- [x] Working functional MVP  
+- [x] README with team name + members  
+- [x] Solution overview in our own words  
+- [x] Features + tech stack  
+- [x] Installation instructions  
+- [x] Environment variables documented (no secrets committed)  
+- [x] Dependency files (`package.json`, `requirements.txt`)  
+- [x] Meaningful commit history  
+- [ ] Screenshots in `docs/screenshots/` (optional polish)  
+- [ ] Figma (only if applicable — N/A for this submission)  
 
 ---
 
 ## Screenshots
 
-Place PNGs in `docs/screenshots/`:
+Add PNGs under `docs/screenshots/`:
 
-- `hero-placeholder.png` — Landing hero  
-- `dashboard.png` — Dashboard  
-- `resume.png` — Resume analysis  
-- `roadmap.png` — Career roadmap  
-- `chat.png` — AI mentor  
+| File | Screen |
+|------|--------|
+| `hero.png` | Landing hero |
+| `dashboard.png` | Dashboard |
+| `resume.png` | Resume AI + PDF download |
+| `roadmap.png` | Roadmap generator |
+| `chat.png` | AI Mentor |
 
 ---
 
@@ -255,4 +311,5 @@ Typography: **Inter**
 
 ## License
 
-Built for the BuildByte Hackathon. Use freely for demos and learning.
+Built for BuildByte (IEEE NED Student Branch) by **BuildandDebug**.  
+For hackathon evaluation and learning use.

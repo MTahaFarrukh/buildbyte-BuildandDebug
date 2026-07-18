@@ -339,7 +339,7 @@ export default function LandingPage() {
       <footer className="border-t border-border py-10 text-center text-sm text-muted-foreground">
         <p className="font-semibold text-foreground">CareerGPS AI</p>
         <p className="mt-1">Your AI Career Mentor for Students & Young Professionals.</p>
-        <p className="mt-4">© {new Date().getFullYear()} CareerGPS AI. Built for BuildByte Hackathon.</p>
+        <p className="mt-4">© {new Date().getFullYear()} CareerGPS AI · Team BuildandDebug · Built for BuildByte Hackathon.</p>
       </footer>
     </div>
   )
