@@ -4,9 +4,37 @@
 
 > Built for **BuildByte** — IEEE NED Student Branch Hackathon
 
-[![GitHub](https://img.shields.io/badge/GitHub-buildbyte--Amigos-4F46E5)](https://github.com/MTahaFarrukh/buildbyte-Amigos)
-[![Stack](https://img.shields.io/badge/Stack-React%20%2B%20FastAPI%20%2B%20Groq-7C3AED)](#tech-stack)
-[![AI](https://img.shields.io/badge/AI-Llama%203.3%2070B-06B6D4)](#architecture)
+### Project
+[![BuildByte](https://img.shields.io/badge/Hackathon-BuildByte-4F46E5?style=for-the-badge&logo=ieee&logoColor=white)](https://github.com/MTahaFarrukh/buildbyte-Amigos)
+[![Team](https://img.shields.io/badge/Team-BuildandDebug-7C3AED?style=for-the-badge)](#team)
+[![Product](https://img.shields.io/badge/Product-CareerGPS%20AI-06B6D4?style=for-the-badge)](#solution-overview-in-our-own-words)
+[![Status](https://img.shields.io/badge/Status-MVP%20Ready-10B981?style=for-the-badge)](#submission-checklist-buildbyte)
+
+### Repository
+[![GitHub](https://img.shields.io/badge/GitHub-buildbyte--Amigos-181717?style=flat-square&logo=github)](https://github.com/MTahaFarrukh/buildbyte-Amigos)
+[![License](https://img.shields.io/badge/License-Hackathon%20Use-blue?style=flat-square)](#license)
+[![PRs](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square)](https://github.com/MTahaFarrukh/buildbyte-Amigos)
+
+### Frontend
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Framer Motion](https://img.shields.io/badge/Framer%20Motion-Motion-0055FF?style=flat-square&logo=framer&logoColor=white)](https://www.framer.com/motion)
+[![React Router](https://img.shields.io/badge/React%20Router-7-CA4245?style=flat-square&logo=reactrouter&logoColor=white)](https://reactrouter.com)
+
+### Backend & AI
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-API-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![LangChain](https://img.shields.io/badge/LangChain-Orchestration-1C3C3C?style=flat-square)](https://www.langchain.com)
+[![Groq](https://img.shields.io/badge/Groq-Inference-F55036?style=flat-square)](https://groq.com)
+[![Llama](https://img.shields.io/badge/Llama-3.3%2070B-0467DF?style=flat-square&logo=meta&logoColor=white)](https://ai.meta.com/llama)
+[![ReportLab](https://img.shields.io/badge/ReportLab-PDF-FF6F00?style=flat-square)](https://www.reportlab.com)
+
+### Platform
+[![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2B%20DB%20%2B%20Storage-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
+[![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com)
+[![Render](https://img.shields.io/badge/Deploy-Render-46E3B7?style=flat-square&logo=render&logoColor=white)](https://render.com)
 
 ---
 
