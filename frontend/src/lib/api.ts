@@ -5,14 +5,12 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 export const api = axios.create({
   baseURL: `${API_BASE}/api`,
   headers: { 'Content-Type': 'application/json' },
-  timeout: 120000,
+  timeout: 180000,
 })
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('careergps_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
+  if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
@@ -40,32 +38,9 @@ export const resumeApi = {
     full_name?: string
     generate_pdf?: boolean
   }) => api.post('/resume/rewrite', data),
-  build: (data: {
-    full_name: string
-    email?: string
-    phone?: string
-    location?: string
-    linkedin?: string
-    github?: string
-    portfolio?: string
-    target_role: string
-    education?: string
-    experience?: string
-    projects?: string
-    skills?: string
-    notes?: string
-    generate_pdf?: boolean
-  }) => api.post('/resume/build', data),
-  pdf: (data: {
-    structured?: Record<string, unknown>
-    plain_text?: string
-    full_name?: string
-    target_role?: string
-    filename?: string
-  }) =>
-    api.post('/resume/pdf', data, {
-      responseType: 'blob',
-    }),
+  build: (data: Record<string, unknown>) => api.post('/resume/build', data),
+  pdf: (data: Record<string, unknown>) =>
+    api.post('/resume/pdf', data, { responseType: 'blob' }),
   list: (userId: string) => api.get(`/resume/list/${userId}`),
 }
 
@@ -87,6 +62,16 @@ export function downloadBase64Pdf(base64: string, filename: string) {
 export const jobApi = {
   analyze: (data: { resume_text: string; job_description: string }) =>
     api.post('/job/analyze', data),
+  analyzePdf: (file: File, jobDescription: string, userId: string, targetRole: string) => {
+    const form = new FormData()
+    form.append('file', file)
+    form.append('job_description', jobDescription)
+    form.append('user_id', userId)
+    form.append('target_role', targetRole)
+    return api.post('/job/analyze-pdf', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  },
 }
 
 export const roadmapApi = {
@@ -136,7 +121,17 @@ export const chatApi = {
     message: string
     chat_history: { role: string; content: string }[]
     user_context?: string
+    collection_id?: string
   }) => api.post('/chat', data),
+  uploadPdf: (file: File, userId: string, source = 'mentor') => {
+    const form = new FormData()
+    form.append('file', file)
+    form.append('user_id', userId)
+    form.append('source', source)
+    return api.post('/chat/upload-pdf', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  },
 }
 
 export const dashboardApi = {
@@ -157,6 +152,7 @@ export const bonusApi = {
     api.post('/bonus/github', data),
   insights: (data: { activity_data: string; career_path: string; career_score: number }) =>
     api.post('/bonus/insights', data),
+  weeklyReport: (data: Record<string, unknown>) => api.post('/bonus/weekly-report', data),
 }
 
 export default api

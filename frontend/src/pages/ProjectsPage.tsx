@@ -19,6 +19,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input, Label, Textarea, Badge } from '@/components/ui/input'
 import { projectApi } from '@/lib/api'
 import { useAuth } from '@/context/AuthContext'
+import { useWorkspace } from '@/store/workspace'
+import { RecommendationBanner } from '@/components/RecommendationBanner'
 import { cn } from '@/lib/utils'
 
 const CAREER_PATHS = [
@@ -60,6 +62,10 @@ function difficultyVariant(d: string) {
 
 export default function ProjectsPage() {
   const { user } = useAuth()
+  const incrementProjects = useWorkspace((s) => s.incrementProjects)
+  const upsertTrackedProjects = useWorkspace((s) => s.upsertTrackedProjects)
+  const updateTrackedProject = useWorkspace((s) => s.updateTrackedProject)
+  const trackedProjects = useWorkspace((s) => s.trackedProjects)
   const [careerPath, setCareerPath] = useState(user?.career_path || 'Full Stack Developer')
   const [skillLevel, setSkillLevel] = useState<(typeof SKILL_LEVELS)[number]>('intermediate')
   const [interests, setInterests] = useState('')
@@ -79,9 +85,20 @@ export default function ProjectsPage() {
         interests: interests || undefined,
         count,
       })
-      setProjects(data.projects || [])
+      const list = (data.projects || []) as Project[]
+      setProjects(list)
       setExpanded(0)
-      toast.success(`Generated ${data.projects?.length || 0} portfolio projects`)
+      if (list.length) {
+        incrementProjects()
+        upsertTrackedProjects(
+          list.map((p) => ({
+            title: p.title,
+            difficulty: p.difficulty || skillLevel,
+            techStack: p.tech_stack || [],
+          })),
+        )
+      }
+      toast.success(`Generated ${list.length} portfolio projects — now trackable`)
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : 'Failed to generate projects'
       setError(msg)
@@ -106,6 +123,56 @@ export default function ProjectsPage() {
           </div>
         </div>
       </motion.div>
+
+      <RecommendationBanner />
+
+      {trackedProjects.length > 0 && (
+        <Card className="border-border/80 bg-card/70">
+          <CardHeader>
+            <CardTitle className="text-base">Tracked projects</CardTitle>
+            <CardDescription>
+              Update status, add GitHub links — completed projects raise Career Score
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {trackedProjects.map((p) => (
+              <div
+                key={p.id}
+                className="rounded-xl border border-border bg-muted/20 p-4 space-y-3"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div>
+                    <p className="font-semibold">{p.title}</p>
+                    <p className="text-xs text-muted-foreground capitalize">{p.difficulty}</p>
+                  </div>
+                  <select
+                    value={p.status}
+                    onChange={(e) =>
+                      updateTrackedProject(p.id, {
+                        status: e.target.value as typeof p.status,
+                      })
+                    }
+                    className="rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
+                  >
+                    <option value="planning">Planning</option>
+                    <option value="started">Started</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+                <Input
+                  placeholder="GitHub repository URL"
+                  value={p.githubUrl}
+                  onChange={(e) => updateTrackedProject(p.id, { githubUrl: e.target.value })}
+                />
+                {p.completionDate && (
+                  <p className="text-xs text-emerald-500">Completed {p.completionDate}</p>
+                )}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="border-border/80 bg-card/70">
         <CardHeader>
@@ -352,8 +419,11 @@ export default function ProjectsPage() {
           <Rocket className="mx-auto h-10 w-10 text-muted-foreground/50" />
           <p className="mt-4 font-medium">No projects yet</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Configure options above and generate portfolio-ready project ideas.
+            Generate portfolio projects to track progress and raise Career Score.
           </p>
+          <Button className="mt-4" onClick={generate} disabled={loading}>
+            <Rocket className="h-4 w-4" /> Generate Projects
+          </Button>
         </div>
       )}
     </div>

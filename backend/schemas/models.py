@@ -181,6 +181,7 @@ class ChatRequest(BaseModel):
     message: str
     chat_history: list[ChatMessage] = []
     user_context: Optional[str] = ""
+    collection_id: Optional[str] = None
 
 
 class ChatResponse(BaseModel):
@@ -221,6 +222,29 @@ class WeeklyInsightsRequest(BaseModel):
     activity_data: str
     career_path: str = "Software Engineer"
     career_score: int = 50
+
+
+class WeeklyReportRequest(BaseModel):
+    """Payload for weekly career report PDF (from frontend workspace)."""
+
+    career_path: str = "Software Engineer"
+    target_role: str = "Software Engineer"
+    career_score: int = 0
+    previous_score: int = 0
+    weekly_delta: int = 0
+    monthly_delta: int = 0
+    roadmap_progress: int = 0
+    learning_hours: float = 0
+    weekly_hours: float = 0
+    interview_readiness: int = 0
+    resume_score: int = 0
+    ats_score: int = 0
+    achievements: list[str] = []
+    skills_learned: list[str] = []
+    recent_wins: list[str] = []
+    recommended_focus: str = ""
+    motivational_summary: str = ""
+    breakdown: Optional[dict[str, Any]] = None
 
 
 class ProfileUpdate(BaseModel):

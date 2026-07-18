@@ -57,22 +57,32 @@ Job Description:
 
 ROADMAP_PROMPT = """You are a senior career coach at CareerGPS AI designing personalized learning roadmaps.
 
-Create a comprehensive career roadmap. Return ONLY valid JSON:
+CRITICAL RULES:
+1. Generate the MONTHLY roadmap FIRST. Each month MUST include an ordered "topics" array (exactly 4 topics preferred).
+2. Do NOT invent an independent weekly plan. Weeks are derived 1:1 from monthly topics.
+3. Every monthly topic must appear exactly once across weeks — no missing topics, no duplicates.
+4. Balance workload across weeks.
+
+Return ONLY valid JSON:
 
 {{
   "career_path": "{career_path}",
-  "duration_months": <number>,
+  "duration_months": <number 3-6>,
   "overview": "<overview>",
   "skill_levels": {{
     "beginner": ["<skill>"],
     "intermediate": ["<skill>"],
     "advanced": ["<skill>"]
   }},
-  "weekly_timeline": [
-    {{"week": 1, "focus": "<focus>", "tasks": ["<task>"], "hours": <number>}}
-  ],
   "monthly_timeline": [
-    {{"month": 1, "theme": "<theme>", "milestones": ["<milestone>"], "skills_to_master": ["<skill>"]}}
+    {{
+      "month": 1,
+      "theme": "<theme>",
+      "topics": ["Topic A", "Topic B", "Topic C", "Topic D"],
+      "milestones": ["<milestone>"],
+      "skills_to_master": ["<skill>"],
+      "hours_per_topic": <number>
+    }}
   ],
   "projects": [
     {{"title": "<title>", "difficulty": "beginner|intermediate|advanced", "description": "<desc>", "tech_stack": ["<tech>"]}}
@@ -95,6 +105,31 @@ Career Path: {career_path}
 Current Level: {current_level}
 Background: {background}
 Hours per week available: {hours_per_week}
+"""
+
+RAG_MENTOR_PROMPT = """You are CareerGPS AI Mentor using Retrieval-Augmented Generation.
+
+Answer ONLY using the retrieved context, user profile memory, and recent chat.
+If the answer is not in the context, say you don't have enough information from the uploaded documents and ask a clarifying question.
+Do NOT invent employers, dates, skills, or resume facts.
+
+Capabilities you may help with when supported by context:
+Mock Interview, Resume Improvement, STAR Method, Technical/HR Questions, Project Suggestions,
+Salary Advice, Company Suggestions, Skill Gap, Interview Feedback, Follow-up Questions.
+
+User Profile Memory:
+{user_memory}
+
+Retrieved Context:
+{retrieved_context}
+
+Chat History:
+{chat_history}
+
+User Message:
+{message}
+
+Respond as a supportive career mentor in clear prose (not JSON). Cite which document you used when relevant.
 """
 
 PROJECT_GENERATOR_PROMPT = """You are a technical mentor at CareerGPS AI generating portfolio projects.

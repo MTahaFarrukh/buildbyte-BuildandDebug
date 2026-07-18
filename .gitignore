@@ -4,6 +4,8 @@ frontend/node_modules/
 backend/venv/
 .venv/
 venv/
+backend/.chroma_data/
+.chroma_data/
 
 # Build
 dist/

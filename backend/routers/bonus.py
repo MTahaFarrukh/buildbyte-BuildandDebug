@@ -12,9 +12,11 @@ from schemas.models import (
     LinkedInReviewRequest,
     PortfolioReviewRequest,
     WeeklyInsightsRequest,
+    WeeklyReportRequest,
 )
 from services.ai_service import ai_service
 from services.demo_data import demo_weekly_insights
+from services.pdf_weekly_report import weekly_report_base64
 from utils.helpers import truncate_text
 
 router = APIRouter(prefix="/bonus", tags=["Bonus Features"])
@@ -129,3 +131,17 @@ async def weekly_insights(payload: WeeklyInsightsRequest):
     except Exception:
         result = demo_weekly_insights(payload.career_path, payload.career_score)
     return {"success": True, **result}
+
+
+@router.post("/weekly-report")
+async def weekly_report(payload: WeeklyReportRequest):
+    """Generate a downloadable weekly career progress PDF."""
+    data = payload.model_dump()
+    pdf_b64 = weekly_report_base64(data)
+    return {
+        "success": True,
+        "filename": "CareerGPS_Weekly_Report.pdf",
+        "pdf_base64": pdf_b64,
+        "summary": data.get("motivational_summary") or "",
+        "recommended_focus": data.get("recommended_focus") or "",
+    }

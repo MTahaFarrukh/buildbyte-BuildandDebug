@@ -1,21 +1,21 @@
-import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   Award,
-  BookOpen,
   CheckCircle2,
-  Circle,
   Clock,
-  Flame,
+  FileDown,
+  FileText,
   Map,
-  RefreshCw,
+  MessageSquare,
   Rocket,
-  Sparkles,
+  RotateCcw,
+  ArrowRight,
   Target,
   TrendingUp,
-  Trophy,
-  Zap,
+  Sparkles,
+  Library,
+  History,
 } from 'lucide-react'
 import {
   Bar,
@@ -28,528 +28,334 @@ import {
 } from 'recharts'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/input'
-import {
-  EmptyState,
-  Progress,
-  ProgressCircle,
-  Skeleton,
-} from '@/components/ui/progress'
+import { Progress, ProgressCircle } from '@/components/ui/progress'
+import { RecommendationBanner, AchievementsRow } from '@/components/RecommendationBanner'
 import { useAuth } from '@/context/AuthContext'
-import { cn, scoreColor } from '@/lib/utils'
-
-const BADGE_META: Record<string, { label: string; icon: typeof Trophy }> = {
-  newcomer: { label: 'Newcomer', icon: Sparkles },
-  explorer: { label: 'Explorer', icon: Map },
-  resume_pro: { label: 'Resume Pro', icon: BookOpen },
-  streak_7: { label: '7-Day Streak', icon: Flame },
-  project_builder: { label: 'Project Builder', icon: Rocket },
-  interview_ready: { label: 'Interview Ready', icon: Target },
-}
-
-const statCards = [
-  { key: 'learning_hours', label: 'Learning Hours', icon: Clock, suffix: 'h' },
-  { key: 'projects_built', label: 'Projects Built', icon: Rocket, suffix: '' },
-  { key: 'resume_improvements', label: 'Resume Edits', icon: TrendingUp, suffix: '' },
-  { key: 'completed_skills', label: 'Skills Done', icon: CheckCircle2, suffix: '', isArray: true },
-] as const
+import { bonusApi, downloadBase64Pdf } from '@/lib/api'
+import { ACHIEVEMENT_DEFS } from '@/lib/careerEngine'
+import { useWorkspace } from '@/store/workspace'
+import { scoreColor, cn } from '@/lib/utils'
 
 export default function DashboardPage() {
-  const { user, loading: authLoading, refreshProfile } = useAuth()
-  const [refreshing, setRefreshing] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { user } = useAuth()
+  const ws = useWorkspace()
+  const snap = ws.getScoreSnapshot()
+  const progress = ws.getRoadmapProgress()
+  const next = ws.getNextTask()
+  const analytics = ws.getAnalytics()
+  const completed = ws.getCompletedTaskCount()
+  const pending = ws.roadmapTasks.filter((t) => t.status !== 'completed' && t.status !== 'skipped')
+  const activeProject =
+    ws.trackedProjects.find((p) => p.status === 'in_progress' || p.status === 'started') ||
+    ws.trackedProjects[0]
+  const recentChat = [...ws.mentorChat].slice(-4).reverse()
+  const recs = ws.getRecommendations()
 
-  useEffect(() => {
-    let cancelled = false
-    const load = async () => {
-      setRefreshing(true)
-      setError(null)
-      try {
-        await refreshProfile()
-      } catch {
-        if (!cancelled) setError('Could not refresh your dashboard. Showing cached data.')
-      } finally {
-        if (!cancelled) setRefreshing(false)
-      }
-    }
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [refreshProfile])
+  const reset = () => {
+    if (!confirm('Reset workspace? This clears resume analysis, roadmaps, chats, and progress.'))
+      return
+    ws.resetWorkspace()
+    toast.success('Workspace reset')
+  }
 
-  const handleRefresh = async () => {
-    setRefreshing(true)
-    setError(null)
+  const exportWeekly = async () => {
     try {
-      await refreshProfile()
-      toast.success('Dashboard updated')
+      const payload = ws.getWeeklyReportData()
+      const { data } = await bonusApi.weeklyReport(payload)
+      if (data.pdf_base64) {
+        downloadBase64Pdf(data.pdf_base64, data.filename || 'CareerGPS_Weekly_Report.pdf')
+        toast.success('Weekly report downloaded')
+      }
     } catch {
-      setError('Refresh failed. Please try again.')
-      toast.error('Could not refresh dashboard')
-    } finally {
-      setRefreshing(false)
+      toast.error('Could not generate weekly report PDF')
     }
-  }
-
-  const careerScore = user?.career_score ?? 0
-  const roadmapProgress = user?.roadmap_progress ?? 0
-  const weeklyActivity = user?.weekly_activity ?? []
-  const upcomingTasks = user?.upcoming_tasks ?? []
-  const recommendedSkills = user?.recommended_skills ?? []
-  const badges = user?.badges ?? []
-  const completedSkillsCount = user?.completed_skills?.length ?? 0
-
-  const chartData = useMemo(
-    () =>
-      weeklyActivity.length > 0
-        ? weeklyActivity
-        : [
-            { day: 'Mon', hours: 0 },
-            { day: 'Tue', hours: 0 },
-            { day: 'Wed', hours: 0 },
-            { day: 'Thu', hours: 0 },
-            { day: 'Fri', hours: 0 },
-            { day: 'Sat', hours: 0 },
-            { day: 'Sun', hours: 0 },
-          ],
-    [weeklyActivity],
-  )
-
-  const totalWeeklyHours = chartData.reduce((sum, d) => sum + d.hours, 0)
-
-  if (authLoading && !user) {
-    return (
-      <div className="mx-auto max-w-7xl space-y-6">
-        <Skeleton className="h-10 w-64" />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-28" />
-          ))}
-        </div>
-        <Skeleton className="h-72" />
-      </div>
-    )
-  }
-
-  if (!user) {
-    return (
-      <EmptyState
-        icon={Sparkles}
-        title="Sign in to view your dashboard"
-        description="Your career score, tasks, and progress live here once you're logged in."
-        action={
-          <Button asChild>
-            <Link to="/login">Sign in</Link>
-          </Button>
-        }
-      />
-    )
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
-      {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="text-sm text-muted-foreground">Welcome back</p>
+    <div className="mx-auto max-w-6xl space-y-8">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-wrap items-start justify-between gap-4"
+      >
+        <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Hey, {user.full_name?.split(' ')[0] || 'Explorer'} 👋
+            Welcome back, {user?.full_name?.split(' ')[0] || 'Explorer'}
           </h1>
           <p className="mt-1 text-muted-foreground">
-            {user.career_path || 'Set your career path'} · Keep the momentum going
+            Your career command center · Goal:{' '}
+            <span className="font-medium text-foreground">{ws.targetRole}</span>
           </p>
-        </motion.div>
-        <Button variant="outline" onClick={handleRefresh} disabled={refreshing}>
-          <RefreshCw className={cn('h-4 w-4', refreshing && 'animate-spin')} />
-          Refresh
-        </Button>
-      </div>
-
-      {error && (
-        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
-          {error}
         </div>
-      )}
+        <div className="flex flex-wrap gap-2">
+          <Button variant="secondary" size="sm" onClick={exportWeekly}>
+            <FileDown className="h-4 w-4" /> Weekly Report
+          </Button>
+          <Button variant="outline" size="sm" onClick={reset}>
+            <RotateCcw className="h-4 w-4" /> Reset
+          </Button>
+        </div>
+      </motion.div>
 
-      {/* Hero row: score + stats */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.05 }}
-          className="lg:col-span-1"
-        >
-          <Card className="glass relative overflow-hidden border-primary/20">
-            <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary/20 blur-3xl" />
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-primary" />
-                Career Score
-              </CardTitle>
-              <CardDescription>Your overall job-readiness index</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col items-center pb-8">
-              <ProgressCircle value={careerScore} size={140} stroke={12} label="Score" />
-              <p className={cn('mt-4 text-center text-sm font-medium', scoreColor(careerScore))}>
-                {careerScore >= 80
-                  ? 'Excellent — interview ready!'
-                  : careerScore >= 60
-                    ? 'Good progress — keep building'
-                    : careerScore >= 40
-                      ? 'Growing — focus on key gaps'
-                      : 'Getting started — upload your resume'}
-              </p>
-              <Button asChild variant="secondary" size="sm" className="mt-4">
-                <Link to="/app/resume">Improve score</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
+      <RecommendationBanner />
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Card className="glass lg:col-span-1">
+          <CardContent className="flex flex-col items-center p-6">
+            <ProgressCircle value={snap.current} label="Career Score" size={150} />
+            <div className="mt-4 grid w-full grid-cols-3 gap-2 text-center text-xs">
+              <div>
+                <p className="text-muted-foreground">Previous</p>
+                <p className="text-lg font-bold">{snap.previous}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Weekly</p>
+                <p
+                  className={cn(
+                    'text-lg font-bold',
+                    snap.weeklyDelta >= 0 ? 'text-emerald-500' : 'text-rose-500',
+                  )}
+                >
+                  {snap.weeklyDelta >= 0 ? '+' : ''}
+                  {snap.weeklyDelta}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Monthly</p>
+                <p
+                  className={cn(
+                    'text-lg font-bold',
+                    snap.monthlyDelta >= 0 ? 'text-emerald-500' : 'text-rose-500',
+                  )}
+                >
+                  {snap.monthlyDelta >= 0 ? '+' : ''}
+                  {snap.monthlyDelta}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 w-full space-y-1.5 text-xs text-muted-foreground">
+              {[
+                ['Resume', snap.breakdown.resumeQuality, 25],
+                ['Roadmap', snap.breakdown.roadmap, 20],
+                ['Projects', snap.breakdown.projects, 20],
+                ['Interview', snap.breakdown.interview, 15],
+                ['Learning', snap.breakdown.learning, 10],
+                ['Skill gap', snap.breakdown.skillGap, 10],
+              ].map(([label, val, wt]) => (
+                <div key={String(label)} className="flex items-center gap-2">
+                  <span className="w-16 shrink-0">{label}</span>
+                  <Progress value={Number(val)} className="h-1.5 flex-1" />
+                  <span className="w-10 text-right tabular-nums">{val}</span>
+                  <span className="w-8 text-right opacity-60">{wt}%</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:col-span-2">
-          {statCards.map((stat, i) => {
-            const Icon = stat.icon
-            let value: string | number = 0
-            if (stat.key === 'completed_skills') {
-              value = completedSkillsCount
-            } else if (stat.key === 'learning_hours') {
-              value = user.learning_hours ?? 0
-            } else if (stat.key === 'projects_built') {
-              value = user.projects_built ?? 0
-            } else if (stat.key === 'resume_improvements') {
-              value = user.resume_improvements ?? 0
-            }
-            return (
-              <motion.div
-                key={stat.key}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.08 + i * 0.05 }}
-              >
-                <Card className="h-full border-border/80 bg-card/60 transition hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-                  <CardContent className="flex items-center gap-4 p-5">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 text-primary">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">{stat.label}</p>
-                      <p className="text-2xl font-bold">
-                        {value}
-                        {stat.suffix}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            )
-          })}
+          {[
+            { label: 'Resume Score', value: ws.resumeScore ?? 0, icon: Award, href: '/app/resume' },
+            { label: 'ATS Score', value: ws.atsScore ?? 0, icon: TrendingUp, href: '/app/resume' },
+            {
+              label: 'Interview Ready',
+              value: ws.interviewReadiness ?? 0,
+              icon: Target,
+              href: '/app/job-prep',
+            },
+            { label: 'Roadmap', value: progress, icon: Map, href: '/app/roadmap' },
+          ].map((s) => (
+            <Link key={s.label} to={s.href}>
+              <Card className="glass h-full transition hover:border-primary/40">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <s.icon className="h-4 w-4" />
+                    <span className="text-xs">{s.label}</span>
+                  </div>
+                  <p className={`mt-3 text-3xl font-bold ${scoreColor(s.value)}`}>{s.value}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+          <Card className="glass sm:col-span-2">
+            <CardContent className="grid gap-4 p-5 sm:grid-cols-3">
+              <div>
+                <p className="text-xs text-muted-foreground">Hours studied</p>
+                <p className="mt-2 flex items-center gap-2 text-2xl font-bold">
+                  <Clock className="h-5 w-5 text-accent" /> {ws.learningHours}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Projects</p>
+                <p className="mt-2 flex items-center gap-2 text-2xl font-bold">
+                  <Rocket className="h-5 w-5 text-secondary" />{' '}
+                  {ws.trackedProjects.filter((p) => p.status === 'completed').length ||
+                    ws.projectsBuilt}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Skills completed</p>
+                <p className="mt-2 flex items-center gap-2 text-2xl font-bold">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-400" /> {completed}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
-      {/* Roadmap + Weekly goal + Activity */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="lg:col-span-2"
-        >
-          <Card className="glass h-full">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Map className="h-5 w-5 text-secondary" />
-                Roadmap Progress
-              </CardTitle>
-              <CardDescription>Your personalized learning path</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Completion</span>
-                <span className="font-semibold">{roadmapProgress}%</span>
-              </div>
-              <Progress value={roadmapProgress} className="h-3" />
-              <div className="flex flex-wrap gap-2 pt-2">
-                <Button asChild size="sm">
-                  <Link to="/app/roadmap">View roadmap</Link>
-                </Button>
-                <Button asChild size="sm" variant="outline">
-                  <Link to="/app/planner">Open planner</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+      {ws.achievements.length > 0 && (
+        <Card className="glass">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Achievements</CardTitle>
+            <CardDescription>
+              {ws.achievements.length} / {ACHIEVEMENT_DEFS.length} unlocked
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AchievementsRow limit={12} />
+          </CardContent>
+        </Card>
+      )}
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.18 }}
-        >
-          <Card className="glass h-full border-accent/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-accent" />
-                Weekly Goal
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {user.weekly_goal ? (
-                <p className="text-sm leading-relaxed">{user.weekly_goal}</p>
-              ) : (
-                <EmptyState
-                  icon={Target}
-                  title="No goal set"
-                  description="Set a weekly goal in Settings to stay focused."
-                  action={
-                    <Button asChild size="sm" variant="outline">
-                      <Link to="/app/settings">Set goal</Link>
-                    </Button>
-                  }
-                />
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-
-      {/* Tasks + Skills + Chart */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <Card className="glass h-full">
-            <CardHeader>
-              <CardTitle>Upcoming Tasks</CardTitle>
-              <CardDescription>Your next actions to stay on track</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {upcomingTasks.length === 0 ? (
-                <EmptyState
-                  icon={CheckCircle2}
-                  title="All caught up"
-                  description="No pending tasks. Generate a roadmap or analyze your resume to get started."
-                  action={
-                    <Button asChild size="sm">
-                      <Link to="/app/roadmap">Generate roadmap</Link>
-                    </Button>
-                  }
-                />
-              ) : (
-                <ul className="space-y-3">
-                  {upcomingTasks.map((task, i) => (
-                    <motion.li
-                      key={task.id}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.22 + i * 0.04 }}
-                      className={cn(
-                        'flex items-start gap-3 rounded-xl border border-border/80 bg-muted/30 px-4 py-3 transition hover:border-primary/30',
-                        task.done && 'opacity-60',
-                      )}
-                    >
-                      {task.done ? (
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
-                      ) : (
-                        <Circle className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <p className={cn('text-sm font-medium', task.done && 'line-through')}>
-                          {task.title}
-                        </p>
-                        <p className="text-xs text-muted-foreground">Due {task.due}</p>
-                      </div>
-                    </motion.li>
+        <Card className="glass">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Map className="h-5 w-5 text-primary" /> Today&apos;s focus
+            </CardTitle>
+            <CardDescription>
+              {ws.careerPath} · Weekly goal: {ws.weeklyGoal}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Progress value={progress} />
+            <div className="rounded-xl border border-border bg-muted/20 p-4">
+              <p className="text-xs text-muted-foreground">Next task</p>
+              <p className="mt-1 font-semibold">
+                {next?.title || 'Generate a roadmap to unlock daily tasks'}
+              </p>
+              <Button asChild size="sm" className="mt-3" variant="secondary">
+                <Link to={next ? '/app/roadmap' : '/app/roadmap'}>
+                  {next ? 'Continue' : 'Create Roadmap'} <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+            <div className="space-y-2">
+              {pending.slice(0, 4).map((t) => (
+                <div
+                  key={t.id}
+                  className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-sm"
+                >
+                  <span className="truncate">{t.title}</span>
+                  <Badge variant="outline">
+                    {t.status === 'in_progress' ? '◐' : '☐'} W{t.week}
+                  </Badge>
+                </div>
+              ))}
+              {!pending.length && !ws.roadmap && (
+                <p className="text-sm text-muted-foreground">
+                  No roadmap yet — create one to populate today&apos;s tasks.
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="glass">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Rocket className="h-5 w-5 text-secondary" /> Active project
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {activeProject ? (
+              <div className="space-y-3">
+                <p className="text-lg font-semibold">{activeProject.title}</p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge>{activeProject.status.replace('_', ' ')}</Badge>
+                  <Badge variant="outline">{activeProject.difficulty}</Badge>
+                </div>
+                <Button asChild size="sm" variant="outline">
+                  <Link to="/app/projects">Update progress</Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  No tracked projects yet. Generate portfolio projects to boost Career Score.
+                </p>
+                <Button asChild size="sm">
+                  <Link to="/app/projects">Generate Projects</Link>
+                </Button>
+              </div>
+            )}
+            <div className="mt-6 border-t border-border pt-4">
+              <p className="mb-2 flex items-center gap-2 text-sm font-medium">
+                <MessageSquare className="h-4 w-4" /> Recent AI conversations
+              </p>
+              {recentChat.length ? (
+                <ul className="space-y-2">
+                  {recentChat.map((m, i) => (
+                    <li key={i} className="truncate text-xs text-muted-foreground">
+                      <span className="font-medium text-foreground">{m.role}:</span> {m.content}
+                    </li>
                   ))}
                 </ul>
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.22 }}
-        >
-          <Card className="glass h-full">
-            <CardHeader>
-              <CardTitle>Recommended Skills</CardTitle>
-              <CardDescription>Close gaps for {user.career_path || 'your target role'}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {recommendedSkills.length === 0 ? (
-                <EmptyState
-                  icon={BookOpen}
-                  title="No recommendations yet"
-                  description="Run a skill gap analysis to get personalized recommendations."
-                  action={
-                    <Button asChild size="sm" variant="outline">
-                      <Link to="/app/skills">Analyze skills</Link>
-                    </Button>
-                  }
-                />
               ) : (
-                <div className="flex flex-wrap gap-2">
-                  {recommendedSkills.map((skill, i) => (
-                    <motion.div
-                      key={skill}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.24 + i * 0.03 }}
-                    >
-                      <Badge variant="secondary">{skill}</Badge>
-                    </motion.div>
-                  ))}
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  No mentor chats yet.{' '}
+                  <Link className="text-primary underline" to="/app/chat">
+                    Ask your AI coach
+                  </Link>
+                </p>
               )}
-              {user.skills && user.skills.length > 0 && (
-                <div className="mt-6 border-t border-border pt-4">
-                  <p className="mb-2 text-xs font-medium text-muted-foreground">Your skills</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {user.skills.slice(0, 8).map((s) => (
-                      <Badge key={s} variant="outline">
-                        {s}
-                      </Badge>
-                    ))}
-                    {user.skills.length > 8 && (
-                      <Badge variant="outline">+{user.skills.length - 8} more</Badge>
-                    )}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Weekly activity chart + Badges */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          className="lg:col-span-2"
-        >
-          <Card className="glass">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Weekly Activity</CardTitle>
-                  <CardDescription>
-                    {totalWeeklyHours > 0
-                      ? `${totalWeeklyHours.toFixed(1)} hours this week`
-                      : 'Start learning to see your activity'}
-                  </CardDescription>
-                </div>
-                <Badge variant="accent">{totalWeeklyHours.toFixed(1)}h total</Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="h-56 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" vertical={false} />
-                    <XAxis
-                      dataKey="day"
-                      tick={{ fill: 'var(--color-muted-foreground)', fontSize: 12 }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      tick={{ fill: 'var(--color-muted-foreground)', fontSize: 12 }}
-                      axisLine={false}
-                      tickLine={false}
-                      allowDecimals={false}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        background: 'var(--color-card)',
-                        border: '1px solid var(--color-border)',
-                        borderRadius: '12px',
-                        fontSize: '12px',
-                      }}
-                      formatter={(value) => [`${value ?? 0}h`, 'Hours']}
-                    />
-                    <Bar
-                      dataKey="hours"
-                      fill="url(#barGradient)"
-                      radius={[8, 8, 0, 0]}
-                      maxBarSize={48}
-                    />
-                    <defs>
-                      <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#4F46E5" />
-                        <stop offset="100%" stopColor="#06B6D4" />
-                      </linearGradient>
-                    </defs>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+      <Card className="glass">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-accent" /> Weekly learning hours
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="h-56">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={analytics.learningHoursMonthly}>
+              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+              <XAxis dataKey="month" tickLine={false} axisLine={false} />
+              <YAxis tickLine={false} axisLine={false} allowDecimals={false} />
+              <Tooltip />
+              <Bar dataKey="hours" fill="#4F46E5" radius={[8, 8, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.28 }}
-        >
-          <Card className="glass h-full border-secondary/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Award className="h-5 w-5 text-secondary" />
-                Achievements
-              </CardTitle>
-              <CardDescription>Badges you've earned</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {badges.length === 0 ? (
-                <EmptyState
-                  icon={Trophy}
-                  title="No badges yet"
-                  description="Complete tasks and improve your resume to unlock achievements."
-                />
-              ) : (
-                <div className="grid gap-3">
-                  {badges.map((badge, i) => {
-                    const meta = BADGE_META[badge] ?? {
-                      label: badge.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-                      icon: Trophy,
-                    }
-                    const Icon = meta.icon
-                    return (
-                      <motion.div
-                        key={badge}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.3 + i * 0.05 }}
-                        className="flex items-center gap-3 rounded-xl border border-secondary/20 bg-gradient-to-r from-secondary/10 to-primary/5 px-4 py-3"
-                      >
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/20 text-secondary">
-                          <Icon className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold">{meta.label}</p>
-                          <p className="text-xs text-muted-foreground">Unlocked</p>
-                        </div>
-                      </motion.div>
-                    )
-                  })}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
+      <div className="flex flex-wrap gap-2">
+        {[
+          { to: '/app/resume', label: 'Resume AI', icon: FileText },
+          { to: '/app/job-prep', label: 'Job Prep', icon: Target },
+          { to: '/app/chat', label: 'AI Mentor', icon: MessageSquare },
+          { to: '/app/timeline', label: 'Timeline', icon: History },
+          { to: '/app/library', label: 'PDF Library', icon: Library },
+          { to: '/app/analytics', label: 'Analytics', icon: TrendingUp },
+        ].map((a) => (
+          <Button key={a.to} asChild variant="outline" size="sm">
+            <Link to={a.to}>
+              <a.icon className="h-4 w-4" /> {a.label}
+            </Link>
+          </Button>
+        ))}
+        {recs.slice(1, 3).map((r) => (
+          <Button key={r.id} asChild variant="ghost" size="sm">
+            <Link to={r.href}>{r.cta}</Link>
+          </Button>
+        ))}
       </div>
     </div>
   )

@@ -171,6 +171,8 @@ async def upload_resume(
         "resume_id": resume_id,
         "filename": file.filename,
         "text_preview": text[:500],
+        "full_text": text,
+        "text": text,
         "char_count": len(text),
         "message": "Resume uploaded and text extracted successfully",
     }

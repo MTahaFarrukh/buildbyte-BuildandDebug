@@ -107,27 +107,43 @@ def demo_job_analysis(job_description: str) -> dict[str, Any]:
 
 
 def demo_roadmap(career_path: str, current_level: str) -> dict[str, Any]:
+    monthly = [
+        {
+            "month": 1,
+            "theme": "Foundations",
+            "topics": ["Environment Setup", "Language Basics", "Functions", "Mini Project"],
+            "milestones": ["Complete fundamentals"],
+            "skills_to_master": ["Basics"],
+            "hours_per_topic": 6,
+        },
+        {
+            "month": 2,
+            "theme": "Building",
+            "topics": ["Core Framework", "APIs", "Databases", "Auth Project"],
+            "milestones": ["Ship first project"],
+            "skills_to_master": ["Framework"],
+            "hours_per_topic": 6,
+        },
+        {
+            "month": 3,
+            "theme": "Depth",
+            "topics": ["Testing", "Deployment", "System Design Intro", "Portfolio Polish"],
+            "milestones": ["Interview-ready portfolio"],
+            "skills_to_master": ["Testing", "Deploy"],
+            "hours_per_topic": 6,
+        },
+    ]
     return {
         "career_path": career_path,
-        "duration_months": 6,
-        "overview": f"A structured 6-month path from {current_level} to job-ready {career_path}.",
+        "duration_months": 3,
+        "overview": f"A structured path from {current_level} to job-ready {career_path}.",
         "skill_levels": {
             "beginner": ["Fundamentals", "Tools & Environment", "Version Control"],
             "intermediate": ["Core Frameworks", "APIs", "Databases"],
             "advanced": ["System Design", "Testing", "Deployment"],
         },
-        "weekly_timeline": [
-            {"week": i, "focus": f"Week {i} focus area", "tasks": [f"Study topic {i}", f"Practice exercise {i}"], "hours": 10}
-            for i in range(1, 5)
-        ],
-        "monthly_timeline": [
-            {"month": 1, "theme": "Foundations", "milestones": ["Complete fundamentals"], "skills_to_master": ["Basics"]},
-            {"month": 2, "theme": "Building", "milestones": ["Ship first project"], "skills_to_master": ["Framework"]},
-            {"month": 3, "theme": "Depth", "milestones": ["Intermediate project"], "skills_to_master": ["APIs", "DB"]},
-            {"month": 4, "theme": "Polish", "milestones": ["Portfolio ready"], "skills_to_master": ["Testing"]},
-            {"month": 5, "theme": "Interview Prep", "milestones": ["Mock interviews"], "skills_to_master": ["DSA"]},
-            {"month": 6, "theme": "Job Hunt", "milestones": ["Apply to roles"], "skills_to_master": ["System Design"]},
-        ],
+        "monthly_timeline": monthly,
+        "weekly_timeline": [],  # derived server-side
         "projects": [
             {
                 "title": f"{career_path} Starter Project",
@@ -135,15 +151,9 @@ def demo_roadmap(career_path: str, current_level: str) -> dict[str, Any]:
                 "description": "A foundational portfolio piece",
                 "tech_stack": ["Relevant core stack"],
             },
-            {
-                "title": f"Intermediate {career_path} App",
-                "difficulty": "intermediate",
-                "description": "Full-featured application with real-world patterns",
-                "tech_stack": ["Framework", "Database", "Auth"],
-            },
         ],
         "courses": [
-            {"title": f"{career_path} Bootcamp Path", "provider": "freeCodeCamp / Coursera", "url_hint": career_path, "free": True}
+            {"title": f"{career_path} Path", "provider": "freeCodeCamp / Coursera", "url_hint": career_path, "free": True}
         ],
         "books": [
             {"title": "Clean Code", "author": "Robert C. Martin", "why": "Write professional-quality code"}
@@ -153,7 +163,6 @@ def demo_roadmap(career_path: str, current_level: str) -> dict[str, Any]:
         ],
         "practice_resources": [
             {"name": "LeetCode / HackerRank", "type": "platform", "description": "Coding practice"},
-            {"name": "GitHub", "type": "repo", "description": "Open source contributions"},
         ],
         "_demo_mode": True,
     }

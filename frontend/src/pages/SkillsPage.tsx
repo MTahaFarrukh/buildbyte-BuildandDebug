@@ -19,6 +19,8 @@ import { Input, Label, Badge } from '@/components/ui/input'
 import { Progress, ProgressCircle } from '@/components/ui/progress'
 import { skillsApi } from '@/lib/api'
 import { useAuth } from '@/context/AuthContext'
+import { useWorkspace } from '@/store/workspace'
+import { RecommendationBanner } from '@/components/RecommendationBanner'
 import { cn } from '@/lib/utils'
 
 interface MissingSkill {
@@ -49,6 +51,8 @@ function difficultyColor(d: string) {
 
 export default function SkillsPage() {
   const { user } = useAuth()
+  const setSkillGap = useWorkspace((s) => s.setSkillGap)
+  const setTargetRoleWs = useWorkspace((s) => s.setTargetRole)
   const [skillInput, setSkillInput] = useState('')
   const [skills, setSkills] = useState<string[]>(user?.skills || [])
   const [targetRole, setTargetRole] = useState(user?.career_path || 'Software Engineer')
@@ -110,6 +114,8 @@ export default function SkillsPage() {
         target_role: targetRole,
       })
       setAnalysis(data as SkillAnalysis)
+      setSkillGap(data as Record<string, unknown>)
+      setTargetRoleWs(targetRole)
       setCheckedSkills(new Set())
       toast.success('Skill gap analysis complete')
     } catch (e: unknown) {
@@ -141,6 +147,8 @@ export default function SkillsPage() {
           </div>
         </div>
       </motion.div>
+
+      <RecommendationBanner />
 
       <div className="grid gap-6 lg:grid-cols-5">
         <Card className="border-border/80 bg-card/70 lg:col-span-2">

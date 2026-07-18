@@ -5,6 +5,7 @@ from prompts.templates import ROADMAP_PROMPT
 from schemas.models import RoadmapRequest
 from services.ai_service import ai_service
 from services.demo_data import demo_roadmap
+from services.roadmap_derive import derive_weekly_from_monthly
 
 router = APIRouter(prefix="/roadmap", tags=["Roadmap"])
 
@@ -42,11 +43,16 @@ async def generate_roadmap(payload: RoadmapRequest):
         if settings.groq_api_key:
             result = await ai_service.generate_json(
                 prompt,
-                system="You are CareerGPS AI roadmap architect. Return valid JSON only.",
+                system=(
+                    "You are CareerGPS AI roadmap architect. "
+                    "Generate MONTHLY roadmap with topics only. Never invent independent weeks. Return valid JSON only."
+                ),
             )
         else:
             result = demo_roadmap(payload.career_path, payload.current_level)
     except Exception:
         result = demo_roadmap(payload.career_path, payload.current_level)
 
+    # Always derive weekly from monthly (source of truth)
+    result = derive_weekly_from_monthly(result, hours_per_week=payload.hours_per_week)
     return {"success": True, **result}

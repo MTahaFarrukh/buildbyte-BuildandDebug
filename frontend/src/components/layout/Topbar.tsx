@@ -1,13 +1,15 @@
 import { Menu, Moon, Sun, Bell, LogOut } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { useTheme } from '@/context/ThemeContext'
 import { useAuth } from '@/context/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useWorkspace } from '@/store/workspace'
 
 export function Topbar({ onMenu }: { onMenu: () => void }) {
   const { theme, toggleTheme } = useTheme()
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const careerScore = useWorkspace((s) => s.getCareerScore())
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-xl sm:px-6">
@@ -20,7 +22,10 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
             Hello, {user?.full_name?.split(' ')[0] || 'there'}
           </p>
           <p className="hidden text-xs text-muted-foreground sm:block">
-            Keep building — your career score is {user?.career_score ?? '—'}
+            Keep building — your career score is{' '}
+            <Link to="/app" className="font-semibold text-primary hover:underline">
+              {careerScore}
+            </Link>
           </p>
         </div>
       </div>

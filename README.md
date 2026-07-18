@@ -1,6 +1,6 @@
 # CareerGPS AI
 
-**Your AI Career Mentor for Students & Young Professionals.**
+**Your AI-powered Career Operating System for Students & Young Professionals.**
 
 > Built for **BuildByte** — IEEE NED Student Branch Hackathon
 
@@ -8,7 +8,7 @@
 [![BuildByte](https://img.shields.io/badge/Hackathon-BuildByte-4F46E5?style=for-the-badge&logo=ieee&logoColor=white)](https://github.com/MTahaFarrukh/buildbyte-BuildandDebug)
 [![Team](https://img.shields.io/badge/Team-BuildandDebug-7C3AED?style=for-the-badge)](#team)
 [![Product](https://img.shields.io/badge/Product-CareerGPS%20AI-06B6D4?style=for-the-badge)](#solution-overview-in-our-own-words)
-[![Status](https://img.shields.io/badge/Status-MVP%20Ready-10B981?style=for-the-badge)](#submission-checklist-buildbyte)
+[![Status](https://img.shields.io/badge/Status-Career%20OS%20Ready-10B981?style=for-the-badge)](#submission-checklist)
 
 ### Repository
 [![GitHub](https://img.shields.io/badge/GitHub-buildbyte--BuildandDebug-181717?style=flat-square&logo=github)](https://github.com/MTahaFarrukh/buildbyte-BuildandDebug)
@@ -20,8 +20,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Zustand](https://img.shields.io/badge/Zustand-Workspace-443E38?style=flat-square)](https://zustand-demo.pmnd.rs)
 [![Framer Motion](https://img.shields.io/badge/Framer%20Motion-Motion-0055FF?style=flat-square&logo=framer&logoColor=white)](https://www.framer.com/motion)
-[![React Router](https://img.shields.io/badge/React%20Router-7-CA4245?style=flat-square&logo=reactrouter&logoColor=white)](https://reactrouter.com)
 
 ### Backend & AI
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
@@ -29,6 +29,7 @@
 [![LangChain](https://img.shields.io/badge/LangChain-Orchestration-1C3C3C?style=flat-square)](https://www.langchain.com)
 [![Groq](https://img.shields.io/badge/Groq-Inference-F55036?style=flat-square)](https://groq.com)
 [![Llama](https://img.shields.io/badge/Llama-3.3%2070B-0467DF?style=flat-square&logo=meta&logoColor=white)](https://ai.meta.com/llama)
+[![ChromaDB](https://img.shields.io/badge/ChromaDB-RAG-FF6F00?style=flat-square)](https://www.trychroma.com)
 [![ReportLab](https://img.shields.io/badge/ReportLab-PDF-FF6F00?style=flat-square)](https://www.reportlab.com)
 
 ### Platform
@@ -53,22 +54,23 @@
 
 Students graduate every year with degrees but without a clear hiring path. They don’t know which skills companies actually want, whether their resume will pass ATS filters, what projects to build, or how to prepare for interviews. Generic chatbots give advice that disappears the moment the tab closes — no roadmap, no scores, no downloadable resume, no progress.
 
-**CareerGPS AI** is our answer: a single career operating system for students and young professionals. Upload a resume (or build one from scratch), get scored against ATS standards, download a rewritten PDF, paste a job description to see your match gap, generate a week-by-week roadmap, practice interviews, and talk to a mentor that stays on-topic as a coach — not as a random chatbot.
+**CareerGPS AI** is our answer: a **Career Operating System** — not a pile of disconnected AI tools. One shared workspace powers resume analysis, job prep, roadmaps, projects, interviews, mentor chat, analytics, achievements, and a live Career Score. Changing data in one module immediately updates every other module.
 
-We designed it like a real startup product (Linear / Vercel energy): dark/light theme, glass UI, animated transitions, and a modular FastAPI backend with structured JSON prompts so every AI feature returns usable data, not walls of text.
+We designed it like a real SaaS product (Notion AI × Duolingo × LinkedIn Learning energy): dark/light theme, glass UI, gamified roadmap progress, achievement confetti, weekly PDF reports, and a modular FastAPI backend with structured JSON prompts so every AI feature returns usable data.
 
 ---
 
 ## Why this is innovative
 
-Most “career AI” demos stop at one chat box. CareerGPS combines **diagnosis → plan → practice → package** in one loop:
+Most “career AI” demos stop at one chat box. CareerGPS combines **diagnose → plan → practice → package → progress** in one loop:
 
 1. **Diagnose** — resume scores, skill gaps, JD match %
-2. **Plan** — personalized roadmaps + daily/weekly learning planner
-3. **Practice** — interview suites + mentor chat with memory
-4. **Package** — ATS rewrite **and AI-built resumes exported as real PDFs**
+2. **Plan** — personalized roadmaps + learning planner
+3. **Practice** — interview suites + RAG mentor with full career memory
+4. **Package** — ATS rewrite & AI-built resumes as real PDFs
+5. **Progress** — Career Score engine, achievements, timeline, weekly report PDF
 
-The differentiator is not “we called an LLM.” It is **structured career workflows** (prompts → JSON → UI → PDF/deliverable) that a student can actually use to apply for jobs this week.
+The differentiator is not “we called an LLM.” It is a **unified career workspace** where scores, tasks, PDFs, and mentor memory stay connected.
 
 ---
 
@@ -76,31 +78,44 @@ The differentiator is not “we called an LLM.” It is **structured career work
 
 | Feature | Description |
 |---------|-------------|
-| **Landing** | Premium marketing page — hero, features, testimonials, free pricing, FAQ |
+| **Landing** | Premium marketing page — hero, features, testimonials, FAQ |
 | **Auth** | Signup, login, forgot password, Google OAuth (Supabase) |
-| **Dashboard** | Career score, tasks, recommended skills, weekly goal, roadmap progress, badges |
+| **Dashboard** | Command center: Career Score breakdown, today’s tasks, achievements, weekly report export |
+| **Career Score Engine** | Weighted live score (Resume 25% · Roadmap 20% · Projects 20% · Interview 15% · Learning 10% · Skill Gap 10%) |
+| **Smart Recommendations** | Next-best-action banners on every major page |
 | **Resume AI** | PDF upload, multi-score analysis, ATS rewrite, **downloadable PDF** |
 | **Build Resume** | No resume? AI builds one from your details → **PDF export** |
-| **Job Match** | Resume vs job description: match %, missing skills & keywords |
-| **Roadmap** | Weekly/monthly timelines, courses, books, certs, projects |
-| **Projects** | Beginner → Advanced portfolio project generator |
-| **Interview Prep** | Technical, behavioral, HR, coding, system design + mock interview |
-| **Skill Gap** | Priority-ordered missing skills with time estimates |
+| **Job Prep Copilot** | PDF + JD → match, skill gap, interview prep, RAG chat, interview history |
+| **Roadmap** | Monthly topics → weekly plan + ☐ / ◐ / ☑ gamified tasks |
+| **Achievements** | Badges + confetti (first resume, week one, score 80+, etc.) |
+| **Projects** | AI project ideas → trackable status, GitHub link, completion → score |
+| **Skill Gap** | Priority-ordered missing skills synced to workspace |
 | **Learning Planner** | Daily / weekly / monthly adaptive plans |
-| **AI Mentor Chat** | Context-aware career coach with conversation memory |
-| **Analytics** | Progress charts + weekly AI insights |
+| **AI Mentor** | Proactive coach with RAG + full Career OS memory |
+| **Timeline** | Contribution-style heatmap of career journey events |
+| **PDF Library** | View / rename / delete / reuse uploaded PDFs across modules |
+| **Analytics** | Charts from real workspace progress |
+| **Weekly Report** | AI summary + downloadable PDF |
 | **Pro Tools** | LinkedIn, portfolio, and GitHub profile reviews |
 | **Settings** | Theme, notifications, profile, account controls |
+
+### Guided user flow
+
+```
+Landing → Signup → Upload Resume → Analysis → Career Score
+       → Generate Roadmap → Complete Tasks → Projects
+       → Mock Interview → Improve Resume → Apply for Jobs
+```
 
 ---
 
 ## Tech Stack
 
 ### Frontend
-React · Vite · TypeScript · Tailwind CSS v4 · Framer Motion · React Router · React Hook Form · Lucide · Axios · Recharts · Sonner · Supabase JS
+React · Vite · TypeScript · Tailwind CSS v4 · Zustand (persisted Career Workspace) · Framer Motion · React Router · Lucide · Axios · Recharts · Sonner · Supabase JS
 
 ### Backend
-FastAPI · Uvicorn · LangChain · Groq (Llama 3.3 70B) · Pydantic · python-dotenv · pypdf · ReportLab (PDF) · Supabase (Auth, DB, Storage)
+FastAPI · Uvicorn · LangChain · Groq (Llama 3.3 70B) · ChromaDB + sentence-transformers (RAG) · Pydantic · pypdf · ReportLab (resume + weekly report PDFs) · Supabase (Auth, DB, Storage)
 
 ---
 
@@ -109,23 +124,20 @@ FastAPI · Uvicorn · LangChain · Groq (Llama 3.3 70B) · Pydantic · python-do
 ```
 ┌─────────────┐     REST/JSON      ┌──────────────┐
 │  React App  │ ◄────────────────► │   FastAPI    │
-│  (Vercel)   │                    │   (Render)   │
-└──────┬──────┘                    └──────┬───────┘
-       │                                  │
-       │ Supabase Auth                    │ LangChain + structured prompts
-       ▼                                  ▼
-┌─────────────┐                    ┌──────────────┐
-│  Supabase   │                    │  Groq API    │
-│ Auth/DB/S3  │                    │ Llama 3.3 70B│
-└─────────────┘                    └──────────────┘
-                                  │
-                                  ▼
-                           ReportLab PDF engine
+│  + Zustand  │                    │   (Render)   │
+│ Career OS   │                    └──────┬───────┘
+└──────┬──────┘                           │
+       │ Supabase Auth         ┌──────────┼──────────┐
+       ▼                       ▼          ▼          ▼
+┌─────────────┐          ┌─────────┐ ┌────────┐ ┌──────────┐
+│  Supabase   │          │ Groq    │ │ChromaDB│ │ReportLab │
+│ Auth/DB/S3  │          │ Llama   │ │  RAG   │ │   PDFs   │
+└─────────────┘          └─────────┘ └────────┘ └──────────┘
 ```
 
+- One **Career Workspace** (`frontend/src/store/workspace.ts`) shared by all pages
 - Modular backend: `routers` → `services` → `prompts` / `database`
-- Every major AI feature returns **validated JSON** for reliable UI rendering
-- Graceful demo fallbacks if keys are missing (judges can still click through)
+- Structured JSON AI outputs + demo fallbacks when keys are missing
 
 ---
 
@@ -133,26 +145,24 @@ FastAPI · Uvicorn · LangChain · Groq (Llama 3.3 70B) · Pydantic · python-do
 
 ```
 buildbyte-hackathon/
-├── frontend/                 # React + Vite app
+├── frontend/
 │   ├── src/
-│   │   ├── components/       # UI + layout
+│   │   ├── components/       # UI, layout, RecommendationBanner, PDF uploader
 │   │   ├── context/          # Auth + Theme
-│   │   ├── lib/              # API, Supabase, utils
-│   │   ├── pages/            # All product screens
+│   │   ├── lib/              # API, careerEngine, celebrate, utils
+│   │   ├── pages/            # Product screens (+ Timeline, Library, Job Prep)
+│   │   ├── store/            # Zustand Career Workspace
 │   │   ├── App.tsx
 │   │   └── main.tsx
-│   ├── public/
 │   ├── .env.example
 │   └── package.json
-├── backend/                  # FastAPI API
+├── backend/
 │   ├── routers/
-│   ├── services/             # AI + PDF + demo fallbacks
+│   ├── services/             # AI, RAG, PDF resume/weekly report, roadmap derive
 │   ├── schemas/
 │   ├── prompts/
 │   ├── database/             # Supabase client + schema.sql
-│   ├── utils/
 │   ├── main.py
-│   ├── config.py
 │   ├── requirements.txt
 │   └── .env.example
 ├── docs/screenshots/
@@ -236,18 +246,7 @@ App: http://localhost:5173
 4. Storage bucket: `resumes`  
 5. Auth → Email → disable **Confirm email** for local demo  
 6. Optional: enable Google provider  
-
----
-
-## Judge Demo Script (5 minutes)
-
-1. Open landing page → show product story  
-2. Sign up / log in  
-3. **Resume AI** → Analyze existing resume **or** **Build with AI** → **Download PDF**  
-4. **Job Match** → paste a JD → show match % + missing skills  
-5. **Roadmap** → generate path for target role  
-6. **AI Mentor** → ask a career question (show coaching tone)  
-7. **Analytics / Dashboard** → career score + progress  
+7. First RAG request may download the embedding model (`all-MiniLM-L6-v2`) — wait once  
 
 ---
 
@@ -264,17 +263,34 @@ App: http://localhost:5173
 | POST | `/api/resume/build` | Build resume from profile + PDF |
 | POST | `/api/resume/pdf` | Generate PDF from structured/plain text |
 | POST | `/api/job/analyze` | Resume vs JD |
-| POST | `/api/roadmap/generate` | Career roadmap |
+| POST | `/api/job/analyze-pdf` | PDF resume + JD → match, gap, interview, RAG |
+| POST | `/api/roadmap/generate` | Career roadmap (monthly → weekly derived) |
 | POST | `/api/project/generate` | Project ideas |
 | POST | `/api/interview/generate` | Interview prep |
 | POST | `/api/skills/analyze` | Skill gap |
 | POST | `/api/planner` | Learning plan |
-| POST | `/api/chat` | Career mentor |
+| POST | `/api/chat` | Career mentor (RAG-aware) |
+| POST | `/api/chat/upload-pdf` | Embed PDF into Chroma for mentor |
 | GET | `/api/dashboard/{user_id}` | Dashboard data |
 | POST | `/api/bonus/linkedin` | LinkedIn review |
 | POST | `/api/bonus/portfolio` | Portfolio review |
 | POST | `/api/bonus/github` | GitHub analysis |
 | POST | `/api/bonus/insights` | Weekly AI insights |
+| POST | `/api/bonus/weekly-report` | Weekly progress report PDF |
+
+---
+
+## Demo Script (judges)
+
+1. Sign up / demo login → open **Dashboard** (empty-state CTAs)
+2. **Resume AI** → upload PDF → Analyze → ATS Rewrite + download PDF
+3. Watch **Career Score** rise in the top bar
+4. **Job Prep Copilot** → same resume + paste JD → match % + interview history
+5. **Roadmap** → generate → mark tasks ☐ → ◐ → ☑ (achievements / confetti)
+6. **Projects** → generate → set status / GitHub link
+7. **AI Mentor** → ask “What should I study next?” (uses live memory)
+8. **Timeline** + **PDF Library** → journey + reusable docs
+9. Dashboard → **Weekly Report** PDF download
 
 ---
 
@@ -293,19 +309,15 @@ App: http://localhost:5173
 
 ---
 
-## Submission Checklist (BuildByte)
+## Submission Checklist
 
-- [x] Complete source code on GitHub  
-- [x] Working functional MVP  
-- [x] README with team name + members  
-- [x] Solution overview in our own words  
-- [x] Features + tech stack  
-- [x] Installation instructions  
-- [x] Environment variables documented (no secrets committed)  
-- [x] Dependency files (`package.json`, `requirements.txt`)  
-- [x] Meaningful commit history  
-- [ ] Screenshots in `docs/screenshots/` (optional polish)  
-- [ ] Figma (only if applicable — N/A for this submission)  
+- [x] Team name & members in README  
+- [x] Public GitHub repository  
+- [x] Clear problem → solution narrative  
+- [x] Install & run instructions  
+- [x] Environment variable documentation  
+- [x] Feature table + demo script  
+- [x] No secrets committed (`.env` gitignored)  
 
 ---
 
@@ -316,10 +328,11 @@ Add PNGs under `docs/screenshots/`:
 | File | Screen |
 |------|--------|
 | `hero.png` | Landing hero |
-| `dashboard.png` | Dashboard |
+| `dashboard.png` | Career command center |
 | `resume.png` | Resume AI + PDF download |
-| `roadmap.png` | Roadmap generator |
+| `roadmap.png` | Gamified roadmap |
 | `chat.png` | AI Mentor |
+| `timeline.png` | Career timeline |
 
 ---
 

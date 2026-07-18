@@ -11,11 +11,12 @@ import {
   BarChart3,
   Settings,
   Sparkles,
-  GraduationCap,
   Share2,
   GitBranch,
   Globe,
   X,
+  History,
+  Library,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/context/AuthContext'
@@ -23,13 +24,14 @@ import { useAuth } from '@/context/AuthContext'
 const nav = [
   { to: '/app', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/app/resume', icon: FileText, label: 'Resume AI' },
-  { to: '/app/job-match', icon: Briefcase, label: 'Job Match' },
+  { to: '/app/job-prep', icon: Briefcase, label: 'Job Prep Copilot' },
   { to: '/app/roadmap', icon: Map, label: 'Roadmap' },
   { to: '/app/projects', icon: Rocket, label: 'Projects' },
-  { to: '/app/interview', icon: GraduationCap, label: 'Interview Prep' },
   { to: '/app/skills', icon: Target, label: 'Skill Gap' },
   { to: '/app/planner', icon: Calendar, label: 'Learning Plan' },
   { to: '/app/chat', icon: MessageSquare, label: 'AI Mentor' },
+  { to: '/app/timeline', icon: History, label: 'Timeline' },
+  { to: '/app/library', icon: Library, label: 'PDF Library' },
   { to: '/app/analytics', icon: BarChart3, label: 'Analytics' },
   { to: '/app/tools', icon: Sparkles, label: 'Pro Tools' },
   { to: '/app/settings', icon: Settings, label: 'Settings' },
