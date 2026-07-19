@@ -2,40 +2,68 @@
 
 **Your AI-powered Career Operating System for Students & Young Professionals.**
 
-> Built for **BuildByte** — IEEE NED Student Branch Hackathon
+> Built for **BuildByte** — IEEE NED Student Branch Hackathon · Team **BuildandDebug**
 
 ### Project
 [![BuildByte](https://img.shields.io/badge/Hackathon-BuildByte-4F46E5?style=for-the-badge&logo=ieee&logoColor=white)](https://github.com/MTahaFarrukh/buildbyte-BuildandDebug)
 [![Team](https://img.shields.io/badge/Team-BuildandDebug-7C3AED?style=for-the-badge)](#team)
 [![Product](https://img.shields.io/badge/Product-CareerGPS%20AI-06B6D4?style=for-the-badge)](#solution-overview-in-our-own-words)
-[![Status](https://img.shields.io/badge/Status-Career%20OS%20Ready-10B981?style=for-the-badge)](#submission-checklist)
+[![Status](https://img.shields.io/badge/Status-Local%20Setup%20Ready-10B981?style=for-the-badge)](#for-judges--evaluators)
 
 ### Repository
 [![GitHub](https://img.shields.io/badge/GitHub-buildbyte--BuildandDebug-181717?style=flat-square&logo=github)](https://github.com/MTahaFarrukh/buildbyte-BuildandDebug)
 [![License](https://img.shields.io/badge/License-Hackathon%20Use-blue?style=flat-square)](#license)
-[![PRs](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square)](https://github.com/MTahaFarrukh/buildbyte-BuildandDebug)
 
-### Frontend
+### Stack
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Zustand](https://img.shields.io/badge/Zustand-Workspace-443E38?style=flat-square)](https://zustand-demo.pmnd.rs)
-[![Framer Motion](https://img.shields.io/badge/Framer%20Motion-Motion-0055FF?style=flat-square&logo=framer&logoColor=white)](https://www.framer.com/motion)
-
-### Backend & AI
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-API-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![LangChain](https://img.shields.io/badge/LangChain-Orchestration-1C3C3C?style=flat-square)](https://www.langchain.com)
-[![Groq](https://img.shields.io/badge/Groq-Inference-F55036?style=flat-square)](https://groq.com)
-[![Llama](https://img.shields.io/badge/Llama-3.3%2070B-0467DF?style=flat-square&logo=meta&logoColor=white)](https://ai.meta.com/llama)
+[![Groq](https://img.shields.io/badge/Groq-Llama%203.3%2070B-F55036?style=flat-square)](https://groq.com)
+[![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2B%20DB-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
+[![Zustand](https://img.shields.io/badge/Zustand-Workspace-443E38?style=flat-square)](https://zustand-demo.pmnd.rs)
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-RAG-FF6F00?style=flat-square)](https://www.trychroma.com)
-[![ReportLab](https://img.shields.io/badge/ReportLab-PDF-FF6F00?style=flat-square)](https://www.reportlab.com)
 
-### Platform
-[![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2B%20DB%20%2B%20Storage-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
-[![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com)
-[![Render](https://img.shields.io/badge/Deploy-Render-46E3B7?style=flat-square&logo=render&logoColor=white)](https://render.com)
+---
+
+## For Judges / Evaluators
+
+### Live deployment URL
+
+**Not deployed to a public production URL yet.**  
+Please evaluate via **local setup** below (typically 5–10 minutes with your own Groq key). Demo auth works without Supabase.
+
+| Resource | URL |
+|----------|-----|
+| **Repository** | https://github.com/MTahaFarrukh/buildbyte-BuildandDebug |
+| **Local frontend** (after setup) | http://localhost:5173 |
+| **Local API docs** (after setup) | http://localhost:8000/docs |
+| **Local health check** | http://localhost:8000/health |
+
+> Judges may use their own API keys (Groq free tier is enough for basic testing). If an API is inaccessible, contact the team — we will resolve promptly.
+
+### Fastest path to run
+
+```bash
+# 1) Backend
+cd backend
+python -m venv venv
+# Windows: .\venv\Scripts\activate
+# macOS/Linux: source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env → set at least GROQ_API_KEY (sample format in .env.example)
+uvicorn main:app --reload --port 8000
+
+# 2) Frontend (new terminal)
+cd frontend
+npm install
+cp .env.example .env
+# VITE_API_URL=http://localhost:8000 is already set
+npm run dev
+```
+
+Open **http://localhost:5173** → Sign up with any email/password (demo mode) → follow the [Demo Script](#demo-script-judges).
 
 ---
 
@@ -79,7 +107,7 @@ The differentiator is not “we called an LLM.” It is a **unified career works
 | Feature | Description |
 |---------|-------------|
 | **Landing** | Premium marketing page — hero, features, testimonials, FAQ |
-| **Auth** | Signup, login, forgot password, Google OAuth (Supabase) |
+| **Auth** | Signup, login, forgot password, Google OAuth (Supabase) · demo auth without keys |
 | **Dashboard** | Command center: Career Score breakdown, today’s tasks, achievements, weekly report export |
 | **Career Score Engine** | Weighted live score (Resume 25% · Roadmap 20% · Projects 20% · Interview 15% · Learning 10% · Skill Gap 10%) |
 | **Smart Recommendations** | Next-best-action banners on every major page |
@@ -109,13 +137,80 @@ Landing → Signup → Upload Resume → Analysis → Career Score
 
 ---
 
+## Screenshots
+
+| Dashboard | Resume AI |
+|-----------|-----------|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Resume](docs/screenshots/resume.png) |
+
+| Roadmap | AI Mentor |
+|---------|-----------|
+| ![Roadmap](docs/screenshots/roadmap.png) | ![Chat](docs/screenshots/chat.png) |
+
+| Job Prep | Analytics |
+|----------|-----------|
+| ![Job Prep](docs/screenshots/jobprep.png) | ![Analytics](docs/screenshots/analytics.png) |
+
+More under `docs/screenshots/` (`protools.png`, `light.png`, `hero-placeholder.png`).
+
+---
+
 ## Tech Stack
 
 ### Frontend
-React · Vite · TypeScript · Tailwind CSS v4 · Zustand (persisted Career Workspace) · Framer Motion · React Router · Lucide · Axios · Recharts · Sonner · Supabase JS
+React · Vite · TypeScript · Tailwind CSS v4 · Zustand (per-user persisted Career Workspace) · Framer Motion · React Router · Lucide · Axios · Recharts · Sonner · Supabase JS
 
 ### Backend
 FastAPI · Uvicorn · LangChain · Groq (Llama 3.3 70B) · ChromaDB + sentence-transformers (RAG) · Pydantic · pypdf · ReportLab (resume + weekly report PDFs) · Supabase (Auth, DB, Storage)
+
+---
+
+## Low-Level Design (codebase map for review)
+
+Judges reviewing architecture can start here:
+
+```
+frontend/src/
+├── store/workspace.ts          # Single Career OS state (Zustand + per-user localStorage)
+├── lib/careerEngine.ts         # Career Score weights + recommendations + achievements
+├── lib/api.ts                  # Axios client → FastAPI /api/*
+├── context/AuthContext.tsx     # Auth + bindWorkspaceToUser(userId) on login/logout
+├── pages/*                     # Feature screens (Resume, Job Prep, Roadmap, Mentor, …)
+└── components/                 # Shared UI, RecommendationBanner, ResumePdfUploader
+
+backend/
+├── main.py                     # FastAPI app + CORS + router mount
+├── config.py                   # pydantic-settings (.env)
+├── routers/                    # Thin HTTP layer (auth, resume, job, chat, …)
+├── services/
+│   ├── ai_service.py           # Groq / LangChain JSON generation
+│   ├── rag_service.py          # Chroma embed + retrieve
+│   ├── pdf_resume.py           # ReportLab resume PDF
+│   ├── pdf_weekly_report.py    # Weekly progress PDF
+│   └── roadmap_derive.py       # Monthly topics → weekly plan
+├── prompts/templates.py        # Structured prompt contracts
+├── schemas/models.py           # Request/response models
+└── database/                   # Supabase client + schema.sql
+```
+
+### Request flow (example: Resume Analyze)
+
+```
+UI (ResumePage)
+  → resumeApi.analyze()
+  → POST /api/resume/analyze
+  → routers/resume.py
+  → services/ai_service.py + prompts
+  → JSON scores
+  → workspace.setResumeAnalysis()  # updates Career Score, Dashboard, Mentor memory
+```
+
+### Design principles
+- **Routers stay thin** — validation + orchestration only
+- **Services own side effects** — AI, PDF, RAG, storage
+- **Prompts return structured JSON** — UI never scrapes free text
+- **Demo fallbacks** — if `GROQ_API_KEY` is missing, endpoints still return usable demo payloads
+- **Per-user workspace** — `bindWorkspaceToUser()` isolates local progress by account id
 
 ---
 
@@ -124,20 +219,17 @@ FastAPI · Uvicorn · LangChain · Groq (Llama 3.3 70B) · ChromaDB + sentence-t
 ```
 ┌─────────────┐     REST/JSON      ┌──────────────┐
 │  React App  │ ◄────────────────► │   FastAPI    │
-│  + Zustand  │                    │   (Render)   │
-│ Career OS   │                    └──────┬───────┘
-└──────┬──────┘                           │
-       │ Supabase Auth         ┌──────────┼──────────┐
-       ▼                       ▼          ▼          ▼
-┌─────────────┐          ┌─────────┐ ┌────────┐ ┌──────────┐
-│  Supabase   │          │ Groq    │ │ChromaDB│ │ReportLab │
-│ Auth/DB/S3  │          │ Llama   │ │  RAG   │ │   PDFs   │
-└─────────────┘          └─────────┘ └────────┘ └──────────┘
+│  + Zustand  │                    │   (local /   │
+│ Career OS   │                    │    Render)   │
+└──────┬──────┘                    └──────┬───────┘
+       │ Supabase Auth (optional)         │
+       ▼                       ┌──────────┼──────────┐
+┌─────────────┐                ▼          ▼          ▼
+│  Supabase   │          ┌─────────┐ ┌────────┐ ┌──────────┐
+│ Auth/DB/S3  │          │ Groq    │ │ChromaDB│ │ReportLab │
+└─────────────┘          │ Llama   │ │  RAG   │ │   PDFs   │
+                         └─────────┘ └────────┘ └──────────┘
 ```
-
-- One **Career Workspace** (`frontend/src/store/workspace.ts`) shared by all pages
-- Modular backend: `routers` → `services` → `prompts` / `database`
-- Structured JSON AI outputs + demo fallbacks when keys are missing
 
 ---
 
@@ -145,41 +237,40 @@ FastAPI · Uvicorn · LangChain · Groq (Llama 3.3 70B) · ChromaDB + sentence-t
 
 ```
 buildbyte-hackathon/
-├── frontend/
+├── frontend/                 # React + Vite app
 │   ├── src/
-│   │   ├── components/       # UI, layout, RecommendationBanner, PDF uploader
-│   │   ├── context/          # Auth + Theme
-│   │   ├── lib/              # API, careerEngine, celebrate, utils
-│   │   ├── pages/            # Product screens (+ Timeline, Library, Job Prep)
-│   │   ├── store/            # Zustand Career Workspace
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── .env.example
+│   ├── .env.example          # Sample frontend env (safe to commit)
 │   └── package.json
-├── backend/
-│   ├── routers/
-│   ├── services/             # AI, RAG, PDF resume/weekly report, roadmap derive
-│   ├── schemas/
-│   ├── prompts/
-│   ├── database/             # Supabase client + schema.sql
-│   ├── main.py
+├── backend/                  # FastAPI API
+│   ├── routers/ services/ schemas/ prompts/ database/
+│   ├── .env.example          # Sample backend env (safe to commit)
 │   ├── requirements.txt
-│   └── .env.example
-├── docs/screenshots/
+│   └── render.yaml           # Optional Render blueprint
+├── docs/screenshots/         # Product screenshots
 └── README.md
 ```
 
 ---
 
-## Quick Start (Installation)
+## Detailed Setup Instructions
 
 ### Prerequisites
-- Node.js 20+
-- Python 3.11+
-- Groq API key (for live AI)
-- Supabase project (for real auth/storage; demo auth works without it)
 
-### 1. Backend
+| Tool | Version | Notes |
+|------|---------|-------|
+| Node.js | 20+ | Frontend |
+| Python | 3.11+ | Backend |
+| Groq API key | Free tier OK | https://console.groq.com — **required for live AI** |
+| Supabase project | Optional | Real auth/storage; **demo auth works without it** |
+
+### 1. Clone
+
+```bash
+git clone https://github.com/MTahaFarrukh/buildbyte-BuildandDebug.git
+cd buildbyte-BuildandDebug
+```
+
+### 2. Backend
 
 ```bash
 cd backend
@@ -192,61 +283,94 @@ python -m venv venv
 source venv/bin/activate
 
 pip install -r requirements.txt
-cp .env.example .env   # Windows: copy .env.example .env
-# Add GROQ_API_KEY and Supabase keys to .env
+cp .env.example .env
+```
 
+Edit `backend/.env` using the [Environment Variables](#environment-variables-with-sample-values) section.
+
+```bash
 uvicorn main:app --reload --port 8000
 ```
 
 - API docs: http://localhost:8000/docs  
 - Health: http://localhost:8000/health  
 
-### 2. Frontend
+### 3. Frontend
 
 ```bash
 cd frontend
 npm install
-cp .env.example .env   # Windows: copy .env.example .env
-# Set VITE_API_URL=http://localhost:8000
+cp .env.example .env
+# Ensure VITE_API_URL=http://localhost:8000
 npm run dev
 ```
 
 App: http://localhost:5173
 
+### 4. Optional Supabase (production-like auth)
+
+1. Create a project at https://supabase.com  
+2. Copy Project URL + anon key + service role key into both `.env` files  
+3. Run `backend/database/schema.sql` in the SQL Editor  
+4. Create Storage bucket: `resumes`  
+5. Auth → Email → disable **Confirm email** for hackathon demos  
+6. Optional: enable Google OAuth provider  
+
+### Notes for evaluators
+- First RAG / mentor PDF upload may download `all-MiniLM-L6-v2` once (network required).  
+- Without `GROQ_API_KEY`, the API still responds with **demo JSON** so the UI remains clickable.  
+- Each signed-in account keeps a **separate** Career Workspace in browser storage.
+
 ---
 
-## Environment Variables
+## Environment Variables (with sample values)
 
-> Never commit real secrets. Use `.env.example` as the template.
+> **Never commit real secrets.** Copy from `.env.example` → `.env` and replace samples with your keys.  
+> Samples below are **format examples only** — not working credentials.
 
-### Backend (`backend/.env`)
+### Backend — `backend/.env`
 
-| Variable | Description |
-|----------|-------------|
-| `GROQ_API_KEY` | Groq API key for Llama 3.3 70B |
-| `GROQ_MODEL` | Default: `llama-3.3-70b-versatile` |
-| `SUPABASE_URL` | Project URL (`https://xxxx.supabase.co`) — **no** `/rest/v1/` |
-| `SUPABASE_KEY` | Anon / public key |
-| `SUPABASE_SERVICE_KEY` | Service role key (storage/admin) |
-| `FRONTEND_URL` | CORS origin (`http://localhost:5173`) |
-| `PORT` | API port (`8000`) |
+| Variable | Required | Sample value | Description |
+|----------|----------|--------------|-------------|
+| `GROQ_API_KEY` | **Yes** (for live AI) | `gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` | Groq API key → https://console.groq.com |
+| `GROQ_MODEL` | No | `llama-3.3-70b-versatile` | Default chat model |
+| `SUPABASE_URL` | No* | `https://abcdefghijklmnop.supabase.co` | Project URL — **no** `/rest/v1/` suffix |
+| `SUPABASE_KEY` | No* | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example_anon_key` | Supabase anon / public key |
+| `SUPABASE_SERVICE_KEY` | No* | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example_service_role_key` | Service role (storage/admin) |
+| `FRONTEND_URL` | No | `http://localhost:5173` | CORS allowed origin |
+| `ENVIRONMENT` | No | `development` | `development` \| `production` |
+| `PORT` | No | `8000` | Uvicorn port |
 
-### Frontend (`frontend/.env`)
+\*Optional: leave blank to use **demo auth** (any email/password works locally).
 
-| Variable | Description |
-|----------|-------------|
-| `VITE_API_URL` | Backend URL (`http://localhost:8000`) |
-| `VITE_SUPABASE_URL` | Same Supabase project URL |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anon key |
+**Example `backend/.env`:**
 
-### Setup tips
-1. Groq key → https://console.groq.com  
-2. Supabase → create project → Settings → API  
-3. Run `backend/database/schema.sql` in SQL Editor  
-4. Storage bucket: `resumes`  
-5. Auth → Email → disable **Confirm email** for local demo  
-6. Optional: enable Google provider  
-7. First RAG request may download the embedding model (`all-MiniLM-L6-v2`) — wait once  
+```env
+GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+GROQ_MODEL=llama-3.3-70b-versatile
+SUPABASE_URL=https://abcdefghijklmnop.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example_anon_key
+SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example_service_role_key
+FRONTEND_URL=http://localhost:5173
+ENVIRONMENT=development
+PORT=8000
+```
+
+### Frontend — `frontend/.env`
+
+| Variable | Required | Sample value | Description |
+|----------|----------|--------------|-------------|
+| `VITE_API_URL` | **Yes** | `http://localhost:8000` | Backend base URL (no `/api` suffix — client adds `/api`) |
+| `VITE_SUPABASE_URL` | No* | `https://abcdefghijklmnop.supabase.co` | Same as `SUPABASE_URL` |
+| `VITE_SUPABASE_ANON_KEY` | No* | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example_anon_key` | Same as `SUPABASE_KEY` |
+
+**Example `frontend/.env`:**
+
+```env
+VITE_API_URL=http://localhost:8000
+VITE_SUPABASE_URL=https://abcdefghijklmnop.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example_anon_key
+```
 
 ---
 
@@ -278,61 +402,54 @@ App: http://localhost:5173
 | POST | `/api/bonus/insights` | Weekly AI insights |
 | POST | `/api/bonus/weekly-report` | Weekly progress report PDF |
 
+Interactive docs: http://localhost:8000/docs
+
 ---
 
 ## Demo Script (judges)
 
-1. Sign up / demo login → open **Dashboard** (empty-state CTAs)
+1. Sign up with any email/password (demo mode) → **Dashboard**
 2. **Resume AI** → upload PDF → Analyze → ATS Rewrite + download PDF
-3. Watch **Career Score** rise in the top bar
-4. **Job Prep Copilot** → same resume + paste JD → match % + interview history
-5. **Roadmap** → generate → mark tasks ☐ → ◐ → ☑ (achievements / confetti)
+3. Watch **Career Score** update in the top bar
+4. **Job Prep Copilot** → resume + paste a JD → match % + interview history
+5. **Roadmap** → generate → cycle tasks ☐ → ◐ → ☑
 6. **Projects** → generate → set status / GitHub link
-7. **AI Mentor** → ask “What should I study next?” (uses live memory)
-8. **Timeline** + **PDF Library** → journey + reusable docs
+7. **AI Mentor** → ask “What should I study next?”
+8. **Timeline** + **PDF Library**
 9. Dashboard → **Weekly Report** PDF download
 
 ---
 
-## Deployment
+## Deployment (optional — for production later)
 
 ### Frontend → Vercel
-1. Import `frontend`  
+1. Import the `frontend` directory  
 2. Env: `VITE_API_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`  
 3. Build: `npm run build` · Output: `dist`
 
 ### Backend → Render
-1. Web service from `backend`  
+1. Use `backend/render.yaml` or create a Web Service from `backend`  
 2. Build: `pip install -r requirements.txt`  
 3. Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`  
-4. Set production env vars; update `FRONTEND_URL` / `VITE_API_URL`
+4. Set the same env vars as local; set `FRONTEND_URL` to the Vercel URL  
+5. Point frontend `VITE_API_URL` at the Render URL  
+
+When a public URL is live, it will be added at the top of this README under **Live deployment URL**.
 
 ---
 
 ## Submission Checklist
 
-- [x] Team name & members in README  
+- [x] Team name & members documented  
 - [x] Public GitHub repository  
 - [x] Clear problem → solution narrative  
-- [x] Install & run instructions  
-- [x] Environment variable documentation  
-- [x] Feature table + demo script  
-- [x] No secrets committed (`.env` gitignored)  
-
----
-
-## Screenshots
-
-Add PNGs under `docs/screenshots/`:
-
-| File | Screen |
-|------|--------|
-| `hero.png` | Landing hero |
-| `dashboard.png` | Career command center |
-| `resume.png` | Resume AI + PDF download |
-| `roadmap.png` | Gamified roadmap |
-| `chat.png` | AI Mentor |
-| `timeline.png` | Career timeline |
+- [x] Detailed install & run instructions  
+- [x] All environment variables listed **with sample values**  
+- [x] Low-level design / codebase map for review  
+- [x] Screenshots in `docs/screenshots/`  
+- [x] Demo script for judges  
+- [x] No real secrets committed (`.env` gitignored)  
+- [ ] Public live URL (optional — local setup is the evaluation path)
 
 ---
 
