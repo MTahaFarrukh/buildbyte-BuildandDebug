@@ -8,7 +8,7 @@
 [![BuildByte](https://img.shields.io/badge/Hackathon-BuildByte-4F46E5?style=for-the-badge&logo=ieee&logoColor=white)](https://github.com/MTahaFarrukh/buildbyte-BuildandDebug)
 [![Team](https://img.shields.io/badge/Team-BuildandDebug-7C3AED?style=for-the-badge)](#team)
 [![Product](https://img.shields.io/badge/Product-CareerGPS%20AI-06B6D4?style=for-the-badge)](#solution-overview-in-our-own-words)
-[![Status](https://img.shields.io/badge/Status-Local%20Setup%20Ready-10B981?style=for-the-badge)](#for-judges--evaluators)
+[![Status](https://img.shields.io/badge/Status-Live%20on%20Vercel-10B981?style=for-the-badge)](#for-judges--evaluators)
 
 ### Repository
 [![GitHub](https://img.shields.io/badge/GitHub-buildbyte--BuildandDebug-181717?style=flat-square&logo=github)](https://github.com/MTahaFarrukh/buildbyte-BuildandDebug)
@@ -30,17 +30,15 @@
 
 ### Live deployment URL
 
-**Not deployed to a public production URL yet.**  
-Please evaluate via **local setup** below (typically 5–10 minutes with your own Groq key). Demo auth works without Supabase.
-
 | Resource | URL |
 |----------|-----|
+| **Live app (Vercel)** | https://buildbyte-buildand-debug-fjoh.vercel.app/ |
 | **Repository** | https://github.com/MTahaFarrukh/buildbyte-BuildandDebug |
 | **Local frontend** (after setup) | http://localhost:5173 |
 | **Local API docs** (after setup) | http://localhost:8000/docs |
 | **Local health check** | http://localhost:8000/health |
 
-> Judges may use their own API keys (Groq free tier is enough for basic testing). If an API is inaccessible, contact the team — we will resolve promptly.
+> **Frontend is live.** Full AI features need a deployed backend (`VITE_API_URL`) or run the API locally and point the env var at it. Judges may use their own Groq key for local evaluation. If an API is inaccessible, contact the team — we will resolve promptly.
 
 ### Fastest path to run
 
@@ -75,6 +73,7 @@ Open **http://localhost:5173** → Sign up with any email/password (demo mode) �
 | **Members** | Muhammad Taha Farrukh · Muhammad Bilal Rasheed |
 | **Repository** | https://github.com/MTahaFarrukh/buildbyte-BuildandDebug |
 | **Product** | CareerGPS AI |
+| **Live demo** | https://buildbyte-buildand-debug-fjoh.vercel.app/ |
 
 ---
 
@@ -442,16 +441,7 @@ This repo is a **Vite** app in `frontend/`. Do **not** use `react-scripts build`
 | `VITE_SUPABASE_URL` | `https://xxxx.supabase.co` (optional) |
 | `VITE_SUPABASE_ANON_KEY` | `eyJ...` (optional) |
 
-Then click **Redeploy**.
-
-### Backend → Render
-1. Use `backend/render.yaml` or create a Web Service from `backend`  
-2. Build: `pip install -r requirements.txt`  
-3. Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`  
-4. Set the same env vars as local; set `FRONTEND_URL` to the Vercel URL  
-5. Point frontend `VITE_API_URL` at the Render URL  
-
-When a public URL is live, it will be added at the top of this README under **Live deployment URL**.
+Then click **Redeploy**. Live URL: https://buildbyte-buildand-debug-fjoh.vercel.app/
 
 ---
 
@@ -466,7 +456,7 @@ When a public URL is live, it will be added at the top of this README under **Li
 - [x] Screenshots in `docs/screenshots/`  
 - [x] Demo script for judges  
 - [x] No real secrets committed (`.env` gitignored)  
-- [ ] Public live URL (optional — local setup is the evaluation path)
+- [x] Public live URL (frontend): https://buildbyte-buildand-debug-fjoh.vercel.app/
 
 ---
 
