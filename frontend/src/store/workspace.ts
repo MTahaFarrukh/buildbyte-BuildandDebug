@@ -250,8 +250,10 @@ export async function bindWorkspaceToUser(userId: string | null) {
   const prev = localStorage.getItem(ACTIVE_USER_KEY)
 
   if (!userId) {
-    localStorage.removeItem(ACTIVE_USER_KEY)
-    useWorkspace.getState().resetWorkspace()
+    if (prev) {
+      localStorage.setItem(ACTIVE_USER_KEY, prev)
+      await useWorkspace.persist.rehydrate()
+    }
     return
   }
 

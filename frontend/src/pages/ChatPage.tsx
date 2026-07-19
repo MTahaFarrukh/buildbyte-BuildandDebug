@@ -116,7 +116,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-8rem)] max-w-5xl flex-col gap-4">
+    <div className="mx-auto flex min-h-[70vh] max-h-[calc(100vh-5rem)] w-full max-w-5xl flex-col gap-4">
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-3xl font-bold tracking-tight">AI Mentor</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -163,7 +163,7 @@ export default function ChatPage() {
       </Card>
 
       <Card className="glass flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4">
+        <div ref={scrollRef} className="flex-1 min-h-0 space-y-3 overflow-y-auto p-4">
           {mentorChat.length === 0 && (
             <div className="flex flex-col items-center py-10 text-center">
               <MessageSquare className="mb-3 h-10 w-10 text-primary" />

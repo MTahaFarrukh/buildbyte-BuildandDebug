@@ -73,6 +73,19 @@ export default function DashboardPage() {
     trackedProjects[0]
   const recentChat = [...mentorChat].slice(-4).reverse()
   const recs = getRecommendations()
+  const displayName = (user?.full_name?.trim() || user?.email?.split('@')[0]?.trim() || 'Explorer')
+    .split(' ')[0]
+  const displayRole = [
+    targetRole,
+    careerPath,
+    user?.career_path,
+    user?.full_name ? undefined : undefined,
+  ]
+    .map((value) => value?.trim())
+    .find((value): value is string => {
+      if (!value) return false
+      return !['Software Engineer', 'Software Engineering'].includes(value)
+    }) || user?.career_path?.trim() || targetRole || careerPath || 'Set your target role'
 
   const reset = () => {
     if (!confirm('Reset workspace? This clears resume analysis, roadmaps, chats, and progress.'))
@@ -102,12 +115,10 @@ export default function DashboardPage() {
         className="flex flex-wrap items-start justify-between gap-4"
       >
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Welcome back, {user?.full_name?.split(' ')[0] || 'Explorer'}
-          </h1>
+          <h1 className="text-3xl font-bold tracking-tight">Welcome back, {displayName}</h1>
           <p className="mt-1 text-muted-foreground">
             Your career command center · Goal:{' '}
-            <span className="font-medium text-foreground">{targetRole}</span>
+            <span className="font-medium text-foreground">{displayRole}</span>
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

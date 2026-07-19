@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 import { authApi, dashboardApi } from '@/lib/api'
-import { bindWorkspaceToUser } from '@/store/workspace'
+import { bindWorkspaceToUser, useWorkspace } from '@/store/workspace'
 import { toast } from 'sonner'
 
 export interface UserProfile {
@@ -54,6 +54,30 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 const STORAGE_TOKEN = 'careergps_token'
 const STORAGE_USER = 'careergps_user'
 
+function isDefaultRole(value?: string) {
+  const normalized = value?.trim().toLowerCase()
+  return !normalized || normalized === 'software engineer' || normalized === 'software engineering'
+}
+
+function syncWorkspaceFromProfile(profile: UserProfile | null) {
+  if (!profile) return
+
+  const preferredCareerPath = profile.career_path?.trim()
+  if (!preferredCareerPath) return
+
+  const workspace = useWorkspace.getState()
+  const currentCareerPath = workspace.careerPath?.trim()
+  const currentTargetRole = workspace.targetRole?.trim()
+
+  if (isDefaultRole(currentCareerPath)) {
+    workspace.setCareerPath(preferredCareerPath)
+  }
+
+  if (isDefaultRole(currentTargetRole)) {
+    workspace.setTargetRole(preferredCareerPath)
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null)
   const [token, setToken] = useState<string | null>(null)
@@ -66,10 +90,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { data } = await dashboardApi.get(parsed.id)
       const profile = data.dashboard as UserProfile
-      setUser(profile)
-      localStorage.setItem(STORAGE_USER, JSON.stringify(profile))
+      const mergedProfile: UserProfile = {
+        ...profile,
+        id: profile.id || parsed.id,
+        email: profile.email || parsed.email,
+        full_name: profile.full_name || parsed.full_name || 'Explorer',
+        career_path: profile.career_path || parsed.career_path || 'Software Engineer',
+      }
+      setUser(mergedProfile)
+      syncWorkspaceFromProfile(mergedProfile)
+      localStorage.setItem(STORAGE_USER, JSON.stringify(mergedProfile))
     } catch {
       setUser(parsed)
+      syncWorkspaceFromProfile(parsed)
     }
   }, [])
 
@@ -80,6 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setToken(t)
       const parsed = JSON.parse(u) as UserProfile
       setUser(parsed)
+      syncWorkspaceFromProfile(parsed)
       bindWorkspaceToUser(parsed.id)
         .then(() => refreshProfile())
         .finally(() => setLoading(false))
@@ -94,11 +128,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       id: data.user.id,
       email: data.user.email,
       full_name: data.user.full_name || email.split('@')[0],
+      career_path: undefined,
     }
     localStorage.setItem(STORAGE_TOKEN, data.access_token)
     localStorage.setItem(STORAGE_USER, JSON.stringify(profile))
     setToken(data.access_token)
     setUser(profile)
+    syncWorkspaceFromProfile(profile)
     await bindWorkspaceToUser(profile.id)
     await refreshProfile()
     toast.success('Welcome back!')
@@ -120,7 +156,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       id: data.user.id,
       email: data.user.email,
       full_name: data.user.full_name || fullName,
-      career_path: careerPath,
+      career_path: careerPath || 'Full Stack Developer',
     }
     if (data.access_token) {
       localStorage.setItem(STORAGE_TOKEN, data.access_token)
@@ -128,6 +164,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     localStorage.setItem(STORAGE_USER, JSON.stringify(profile))
     setUser(profile)
+    syncWorkspaceFromProfile(profile)
     await bindWorkspaceToUser(profile.id)
     await refreshProfile()
     toast.success('Account created!')

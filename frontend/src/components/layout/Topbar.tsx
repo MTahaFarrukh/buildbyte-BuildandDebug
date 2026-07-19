@@ -20,7 +20,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
         </Button>
         <div>
           <p className="text-sm font-semibold">
-            Hello, {user?.full_name?.split(' ')[0] || 'there'}
+            Hello, {user?.full_name?.trim()?.split(' ')[0] || 'there'}
           </p>
           <p className="hidden text-xs text-muted-foreground sm:block">
             Keep building — your career score is{' '}
