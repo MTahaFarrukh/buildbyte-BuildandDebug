@@ -426,14 +426,15 @@ Interactive docs: http://localhost:8000/docs
 
 This repo is a **Vite** app in `frontend/`. Do **not** use `react-scripts build`.
 
-**Option A — Root Directory = `frontend` (recommended in Vercel UI)**  
-1. New Project → import this GitHub repo  
-2. Set **Root Directory** to `frontend`  
-3. Framework Preset: **Vite**  
-4. Build Command: `npm run build`  
-5. Output Directory: `dist`  
-6. Install Command: `npm install`  
-7. Env vars:
+**Required Vercel project settings**
+1. **Root Directory** → `frontend` (Save)
+2. **Framework Preset** → Vite  
+3. **Build Command** → `npm run build` (clear any override)  
+4. **Output Directory** → `dist`  
+5. **Install Command** → `npm install`  
+   - Do **not** use `npm install --prefix frontend` (that creates `frontend/frontend` and fails)
+
+**Environment variables**
 
 | Name | Example |
 |------|---------|
@@ -441,9 +442,7 @@ This repo is a **Vite** app in `frontend/`. Do **not** use `react-scripts build`
 | `VITE_SUPABASE_URL` | `https://xxxx.supabase.co` (optional) |
 | `VITE_SUPABASE_ANON_KEY` | `eyJ...` (optional) |
 
-**Option B — Deploy from repo root**  
-A root `vercel.json` is included that builds `frontend/` with Vite.  
-In the Vercel dashboard, **clear any custom Build Command** that says `react-scripts build` (that causes exit code 127).
+Then click **Redeploy**.
 
 ### Backend → Render
 1. Use `backend/render.yaml` or create a Web Service from `backend`  
